@@ -9,18 +9,12 @@ def unix_to_date(d):
     ts = int(d) / 1000
     return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-
-
-
 api_key = "fc31aed31ee8e2ae5c2a3f75172b9167873f1bc9"
 URL = "https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=" + api_key
 
 # Make the get request
 r = requests.get(url = URL)
 station_data = r.json()
-
-mycursor = mydb.cursor()
-
 
 # Create empty array to store values
 sql_values = []
@@ -42,11 +36,13 @@ mydb = mysql.connector.connect(
   database="dublinbikes"
 )
 
+mycursor = mydb.cursor()
+
 sql_statement = ("INSERT IGNORE INTO `dublinbikes`.`dynamicinfo`"
     " (`ID`, `availstands`, `availbikes`, `status`, `time`)"
     " VALUES (%s, %s, %s, %s, %s)")
     
-# executemany iterates through the tuplse in sql_values array and applies the sql_statement to each tuple
+# executemany iterates through the tuples in sql_values array and applies the sql_statement to each tuple
 mycursor.executemany(sql_statement, sql_values)
 
 # Apply the changes to the server
