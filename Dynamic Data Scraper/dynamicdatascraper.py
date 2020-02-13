@@ -60,6 +60,5 @@ mycursor.executemany(sql_statement, sql_values)
 # Apply the changes to the server
 mydb.commit()
 
-# Write a trace text file for when the file is scraping date. Will show time and number of records added
-f=open('C:/Users/Conor/Desktop/trace.txt', "a+")
-f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "- " + str(mycursor.rowcount) + " records inserted.\n")
+# Print the time and number of records inserted. 
+print(datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "- " + str(mycursor.rowcount) + " records inserted.")
