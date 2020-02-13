@@ -16,4 +16,8 @@ r = requests.get(url = URL)
 dublin_data = r.json()
 
 for attribute in dublin_data:
-    print(attribute + ": ", dublin_data[attribute])
+    if isinstance(dublin_data[attribute], dict):
+        for key in dublin_data[attribute]:
+            print(key + ": ", dublin_data[attribute][key])
+    else:
+        print(attribute + ": ", dublin_data[attribute])
