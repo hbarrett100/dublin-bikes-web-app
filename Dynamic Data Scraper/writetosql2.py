@@ -9,7 +9,7 @@ def unix_to_date(d):
     ts = int(d) / 1000
     return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-api_key = "api key redacted"
+api_key = "fc31aed31ee8e2ae5c2a3f75172b9167873f1bc9"
 URL = "https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=" + api_key
 
 # Make the get request
@@ -30,9 +30,9 @@ for station in station_data:
 
 # Connect to the RDS database
 mydb = mysql.connector.connect(
-  host="host redacted",
-  user="user redacted",
-  passwd="password redacted",
+    host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
+  user="admin",
+  passwd="fmRdzKkP6mTtwEEsCByh",
   database="dublinbikes"
 )
 
