@@ -1,3 +1,7 @@
+# This script scrapes the dynamic data available through the Dublin Bikes API
+# It then adds it to the RDS database
+# It is being run every 5 mins on an EC2 instance using cron
+
 from datetime import datetime
 import requests
 import mysql.connector
