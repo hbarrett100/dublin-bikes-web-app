@@ -1,0 +1,6 @@
+The following line was added to cron (accessed by typing "crontab -e") on the EC2 instance:
+
+*/5 * * * * ~/anaconda3/envs/dublinbikes/bin/python ~/dynamicdatascraper.py
+
+This runs the script every 5 mins. I had to point cron to the specific python to 
+make it use the correct venv
