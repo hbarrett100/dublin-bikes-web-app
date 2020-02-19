@@ -3,13 +3,21 @@ from datetime import datetime
 import requests 
 import mysql.connector
 
+def unix_to_date(d):
+    """ Takes a unix timestamp as found in the weather JSON and converts
+    to date and time for database """
+
+    ts = int(d)
+    return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
 def get_datetime():
     """ Gets unix timestamp from time module and converts it to date-time format for database """
 
     ts = int(time.time())
-    return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    return unix_to_date(ts)
 
 def print_elements():
+    """Prints elements of to scraped json file for analysis"""
     for attribute in dublin_data:
         if isinstance(dublin_data[attribute], dict):
             for key in dublin_data[attribute]:
@@ -22,6 +30,8 @@ def print_elements():
     print()
 
 def get_weather():
+    """Scrapes weather data from openweathermap.org"""
+    
     API_KEY = "16fb93e92d3bd8aefd9b647c1a8f6acf"
     URL = "http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&appid=" + API_KEY
 
@@ -47,10 +57,10 @@ def get_weather():
         str(dublin_data['wind']['speed']),
         str(dublin_data['wind']['deg']),
         str(dublin_data['clouds']['all']),
-        str(dublin_data['dt']),
+        str(unix_to_date(dublin_data['dt'])),
         str(dublin_data['sys']['type']),
-        str(dublin_data['sys']['sunrise']),
-        str(dublin_data['sys']['sunset']),
+        str(unix_to_date(dublin_data['sys']['sunrise'])),
+        str(unix_to_date(dublin_data['sys']['sunset'])),
         str(dublin_data['timezone']),
         str(dublin_data['cod'])
     )
