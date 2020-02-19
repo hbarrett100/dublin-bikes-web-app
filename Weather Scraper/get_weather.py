@@ -79,4 +79,5 @@ def get_weather():
     cursor.close()
     cnx.close()
 
-get_weather()
+if __name__ == "__main__":
+    get_weather()
