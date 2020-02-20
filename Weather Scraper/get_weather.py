@@ -41,12 +41,9 @@ def get_weather():
 
     data_weather = (
         str(time),
-        str(dublin_data['coord']['lon']),
-        str(dublin_data['coord']['lat']),
         str(dublin_data['weather'][0]['id']),
         str(dublin_data['weather'][0]['main']),
         str(dublin_data['weather'][0]['description']),
-        str(dublin_data['base']),
         str(dublin_data['main']['temp']),
         str(dublin_data['main']['feels_like']),
         str(dublin_data['main']['temp_min']),
@@ -58,11 +55,9 @@ def get_weather():
         str(dublin_data['wind']['deg']),
         str(dublin_data['clouds']['all']),
         str(unix_to_date(dublin_data['dt'])),
-        str(dublin_data['sys']['type']),
         str(unix_to_date(dublin_data['sys']['sunrise'])),
         str(unix_to_date(dublin_data['sys']['sunset'])),
         str(dublin_data['timezone']),
-        str(dublin_data['cod'])
     )
 
     cnx = mysql.connector.connect(user='root', password='Doritos58',
@@ -73,14 +68,12 @@ def get_weather():
     cursor = cnx.cursor()
 
     add_weather = ("INSERT INTO weather "
-                    "(time, longitude, latitude, weatherid, weathermain, "
-                    "weatherdescription, base, temp, feels_like, temp_min, "
+                    "(time, weatherid, weathermain, "
+                    "weatherdescription, temp, feels_like, temp_min, "
                     "temp_max, pressure, humidity, visibility, windspeed, "
-                    "winddirection, clouds, dt, type, sunrise, sunset, "
-                    "timezone, cod) " 
-                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
-
-    data_applicant = (711899, 'Antonio', 'Bandarez', 'His House', 881991)
+                    "winddirection, clouds, dt, sunrise, sunset, "
+                    "timezone) " 
+                    "VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     cursor.execute(add_weather, data_weather)
 
