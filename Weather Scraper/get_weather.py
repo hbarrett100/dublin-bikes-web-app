@@ -63,7 +63,7 @@ def get_weather():
         str(unix_to_date(dublin_data['sys']['sunset'])),
         str(dublin_data['timezone']),
     )
-    add_weather = ("INSERT INTO weather "
+    add_weather = ("INSERT INTO dynamicweather "
                     "(weatherid, weathermain, "
                     "weatherdescription, temp, feels_like, temp_min, "
                     "temp_max, pressure, humidity, visibility, windspeed, "
@@ -72,14 +72,18 @@ def get_weather():
                     "VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
     try:
-        cnx = mysql.connector.connect(user='root', password='Doritos58',
-                                    host='127.0.0.1',
-                                    database='mydb'
+        cnx = mysql.connector.connect(
+            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
+            user="admin",
+            passwd="fmRdzKkP6mTtwEEsCByh",
+            database="dublinbikes"
         )   
         cursor = cnx.cursor()
         cursor.execute(add_weather, data_weather)
         cnx.commit()
         print("Row added.")
+        cursor.close()
+        cnx.close()
     except: 
         print("Database error: row not added.")
         cursor.close()
