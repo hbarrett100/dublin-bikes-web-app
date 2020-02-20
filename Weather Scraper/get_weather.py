@@ -36,11 +36,15 @@ def get_weather():
     URL = "http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&appid=" + API_KEY
 
     time = get_datetime()
-    r = requests.get(url = URL)
+    try:
+        r = requests.get(url = URL)
+    except: 
+        print("Scraping error: data not collected.")
+        exit(1)
+    
     dublin_data = r.json()
 
     data_weather = (
-        str(time),
         str(dublin_data['weather'][0]['id']),
         str(dublin_data['weather'][0]['main']),
         str(dublin_data['weather'][0]['description']),
@@ -59,28 +63,28 @@ def get_weather():
         str(unix_to_date(dublin_data['sys']['sunset'])),
         str(dublin_data['timezone']),
     )
-
-    cnx = mysql.connector.connect(user='root', password='Doritos58',
-                                    host='127.0.0.1',
-                                    database='mydb'
-    )
-
-    cursor = cnx.cursor()
-
     add_weather = ("INSERT INTO weather "
-                    "(time, weatherid, weathermain, "
+                    "(weatherid, weathermain, "
                     "weatherdescription, temp, feels_like, temp_min, "
                     "temp_max, pressure, humidity, visibility, windspeed, "
                     "winddirection, clouds, dt, sunrise, sunset, "
                     "timezone) " 
-                    "VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                    "VALUES (%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
-    cursor.execute(add_weather, data_weather)
-
-    cnx.commit()
-    
-    cursor.close()
-    cnx.close()
+    try:
+        cnx = mysql.connector.connect(user='root', password='Doritos58',
+                                    host='127.0.0.1',
+                                    database='mydb'
+        )   
+        cursor = cnx.cursor()
+        cursor.execute(add_weather, data_weather)
+        cnx.commit()
+        print("Row added.")
+    except: 
+        print("Database error: row not added.")
+        cursor.close()
+        cnx.close()
+        exit(1)
 
 if __name__ == "__main__":
     get_weather()
