@@ -86,8 +86,10 @@ def get_weather():
         cnx.close()
     except: 
         print("Database error: row not added.")
-        cursor.close()
-        cnx.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'cnx' in locals():
+            cnx.close()
         exit(1)
 
 if __name__ == "__main__":
