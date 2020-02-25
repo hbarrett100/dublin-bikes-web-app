@@ -1,0 +1,17 @@
+<!-- this page will inherit code from layout which is common to age -->
+{% extends "layout.html" %}
+
+<!-- to inherit start a block -->
+{% block content %}
+
+<!-- to loop through posts list made on test.py -->
+{% for post in posts %}
+
+<!-- for variables use double curly braces -->
+<h1>{{ post.title }}</h1>
+<p>By {{ post.author }} on {{ post.date_posted }}</p>
+<p>{{ post.content}} </p>
+{% endfor %}
+
+<!-- end the block. The word content not required -->
+{% endblock content %}
