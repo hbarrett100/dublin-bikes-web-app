@@ -25,8 +25,9 @@ try:
     )
 
 except mysql.connector.Error as e:
-    print(e)
-    print("Error Code:", e.errno)
+    print("Error Code:", e)
+    exit(1)
+    
 
 mycursor = mydb.cursor()
 
@@ -40,7 +41,5 @@ try:
     mydb.commit()
     
 except mysql.connector.Error as err:
-    print(err)
-    print("Error Code:", err.errno)
-    print("SQLSTATE", err.sqlstate)
-    print("Message", err.msg)
+    print("Error:", err)
+    exit(1)
