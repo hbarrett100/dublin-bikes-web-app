@@ -22,9 +22,11 @@ def get_locations():
 
         print("SOMETHING WENT WRONG:", err)
 
-    data = {}
+    data = []
     for row in mycursor:
-        data[row[0]] = (row[3], row[4],)
+       data.append({'id': [row[0]],
+                    'lat': row[3],
+                    'lon': row[4]})
     mycursor.close()
     mydb.close()
 
@@ -48,7 +50,7 @@ posts = [
 
 ]
 
-locationdata = [1,2,3]
+locationdata = [{1:1},{2:2}]
 print(locationdata)
 
 @app.route('/')
