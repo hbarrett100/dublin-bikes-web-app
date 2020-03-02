@@ -5,59 +5,45 @@
 {% block content %}
 
 <!-- to loop through posts list made on test.py -->
-{% for post in posts %}
-
-<!-- for variables use double curly braces -->
-<h1>{{ post.title }}</h1>
-<p>By {{ post.author }} on {{ post.date_posted }}</p>
-<p>{{ post.content}} </p>
-<script>console.log('{{ post }}');</script>
-{% endfor %}
-
+    {% for post in posts %}
+        <!-- for variables use double curly braces -->
+        <h1>{{ post.title }}</h1>
+        <p>By {{ post.author }} on {{ post.date_posted }}</p>
+        <p>{{ post.content}} </p>
+        <script>console.log('{{ post }}');</script>
+    {% endfor %}
 
 
-
-
-
-<div id="map"></div>
-<script>
-    var map;
-    function initMap() {
-        // The location of Uluru
-        var uluru = { lat: -25.344, lng: 131.036 };
-        // The map, centered at Uluru
-        map = new google.maps.Map(
-            document.getElementById('map'), { zoom: 4, center: uluru });
-        // The marker, positioned at Uluru
-        var marker = new google.maps.Marker({ position: uluru, map: map });
-    }
-
-</script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
-<script>
-    function addMarker(lat, lon) {
-        console.log(lat);
-        var latLng = new google.maps.LatLng(lat, lon);
-        var marker = new google.maps.Marker({
-            position: latLng,
-            map: map
-        });
-    }
-</script>
-
-{% for loc in locationdata %}
+    <div id="map"></div>
     <script>
+        var map;
+        function initMap() {
 
-        addMarker('{{loc.lat}}','{{loc.lon}}')
+            function addMarker(lat, lon) {
+                console.log(lat);
+                var latLng = new google.maps.LatLng(lat, lon);
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map
+                });
+            }
+       
+            var dublin = { lat: 53.3498, lng: -6.2603 };
+            // The map, centered at Dublin
+            map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 13, center: dublin });
 
+            // The location data is sent from Flask to js
+            // '|tojson' converts the locationdata variable to json, which is then parsed in js
+            locData = JSON.parse('{{ locationdata|tojson }}')
+            for (const loc of locData) {
+                addMarker(loc["lat"], loc["lon"]);
+            }
+        }
 
     </script>
 
-
-
-{% endfor %}
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
 
 <!-- end the block. The word content not required -->
 {% endblock content %}

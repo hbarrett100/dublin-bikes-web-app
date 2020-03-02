@@ -1,5 +1,3 @@
-
-
 def get_locations():
     import mysql.connector
     sql_statement = ("select * FROM staticinfo")
@@ -14,21 +12,22 @@ def get_locations():
         )
 
         mycursor = mydb.cursor()
+
         mycursor.execute(sql_statement)
 
         print(mycursor)
     except mysql.connector.Error as err:
 
         print("SOMETHING WENT WRONG:", err)
-        
+
     data = []
     for row in mycursor:
-       data.append({'id': [row[0]],
-                    'lat' : row[3],
-                    'lon' : row[4]})
+       data.append({'id': row[0],
+                    'lat': row[3],
+                    'lon': row[4]})
     mycursor.close()
     mydb.close()
 
     return data
 
-get_locations()
+print(get_locations())

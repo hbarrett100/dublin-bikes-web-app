@@ -51,7 +51,6 @@ posts = [
 ]
 
 locationdata = get_locations()
-print(locationdata)
 
 @app.route('/')
 @app.route('/home')
