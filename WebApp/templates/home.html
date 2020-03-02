@@ -16,25 +16,48 @@
 
 
 
-{% for loc in locationdata %}
-<h1>{{ loc }}</h1>
-{% endfor %}
 
 
 
 <div id="map"></div>
 <script>
+    var map;
     function initMap() {
         // The location of Uluru
         var uluru = { lat: -25.344, lng: 131.036 };
         // The map, centered at Uluru
-        var map = new google.maps.Map(
+        map = new google.maps.Map(
             document.getElementById('map'), { zoom: 4, center: uluru });
         // The marker, positioned at Uluru
         var marker = new google.maps.Marker({ position: uluru, map: map });
     }
+
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap" async defer></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
+<script>
+    function addMarker(lat, lon) {
+        console.log(lat);
+        var latLng = new google.maps.LatLng(lat, lon);
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map
+        });
+    }
+</script>
+
+{% for loc in locationdata %}
+    <script>
+
+        addMarker('{{loc.lat}}','{{loc.lon}}')
+
+
+    </script>
+
+
+
+{% endfor %}
+
 
 <!-- end the block. The word content not required -->
 {% endblock content %}

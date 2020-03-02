@@ -24,7 +24,7 @@ def get_locations():
 
     data = []
     for row in mycursor:
-       data.append({'id': [row[0]],
+       data.append({'id': row[0],
                     'lat': row[3],
                     'lon': row[4]})
     mycursor.close()
@@ -50,13 +50,13 @@ posts = [
 
 ]
 
-locationdata = [{1:1},{2:2}]
+locationdata = get_locations()
 print(locationdata)
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', posts=posts)
+    return render_template('home.html', posts=posts, locationdata=locationdata)
 
 @app.route('/about')
 def about(): 
