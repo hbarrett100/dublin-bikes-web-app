@@ -25,6 +25,7 @@ def get_locations():
     data = []
     for row in mycursor:
        data.append({'id': row[0],
+                    'name': row[1],
                     'lat': row[3],
                     'lon': row[4]})
     mycursor.close()

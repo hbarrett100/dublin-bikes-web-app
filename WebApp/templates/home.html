@@ -17,14 +17,31 @@
     <div id="map"></div>
     <script>
         var map;
+        var infowindow;
         function initMap() {
+            
 
-            function addMarker(lat, lon) {
+
+            function addMarker(lat, lon, name) {
                 console.log(lat);
                 var latLng = new google.maps.LatLng(lat, lon);
                 var marker = new google.maps.Marker({
                     position: latLng,
                     map: map
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: name
+                });
+
+                marker.addListener('click', function() {
+                    var tempMap = infowindow.getMap();
+                    // if (tempMap !== null && typeof tempMap !== "undefined") {
+                    //     infowindow.close();
+                    // }
+                    if (infowindow) {
+                    infowindow.close();
+                        }
+                    infowindow.open(map, marker);
                 });
             }
        
@@ -37,7 +54,7 @@
             // '|tojson' converts the locationdata variable to json, which is then parsed in js
             locData = JSON.parse('{{ locationdata|tojson }}')
             for (const loc of locData) {
-                addMarker(loc["lat"], loc["lon"]);
+                addMarker(loc["lat"], loc["lon"], loc["name"]);
             }
         }
 
