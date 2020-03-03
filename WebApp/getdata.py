@@ -1,6 +1,3 @@
-from flask import Flask, render_template, url_for
-
-
 def get_locations():
     import mysql.connector
     sql_statement = ("select * FROM staticinfo")
@@ -15,6 +12,7 @@ def get_locations():
         )
 
         mycursor = mydb.cursor()
+
         mycursor.execute(sql_statement)
 
         print(mycursor)
@@ -32,34 +30,4 @@ def get_locations():
 
     return data
 
-app = Flask(__name__)
-
-posts = [
-    { 
-    'author': 'Conor',
-    'title':'blog post 1',
-    'content': 'First post content',
-    'date_posted' : 'Feb 23, 2020'
-    },
-
- { 'author': 'JiJi',
-    'title':'blog post 2',
-    'content': 'Seoncd post content',
-    'date_posted' : 'Feb 23, 2020'
-    }
-
-]
-
-locationdata = get_locations()
-
-@app.route('/')
-@app.route('/home')
-def home():
-    return render_template('home.html', posts=posts, locationdata=locationdata)
-
-@app.route('/about')
-def about(): 
-    return render_template('about.html', title='About')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+print(get_locations())
