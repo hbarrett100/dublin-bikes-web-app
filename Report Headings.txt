@@ -1,0 +1,28 @@
+Project Management
+•	Burndown
+•	Trllow
+•	Github setup
+•	Minutes
+
+Overall Project Requirements
+
+Sprint 1 – Set up
+•	Weather Scraping
+•	Bike info Scraping
+•	Basic Flask
+
+Sprint 2 – MVP
+•	Basic Webpage layout
+•	Map with markers
+•	Weather widget
+•	Info box
+
+Sprint 3 – Additional Functionality/ U
+
+Sprint 4 – Machine learning 
+
+Appendix
+•	Summary of minutes
+•	Wireframe website layout
+•	Screenshots
+•	Github snapshots/ link
