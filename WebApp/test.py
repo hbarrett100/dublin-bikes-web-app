@@ -25,7 +25,7 @@ def get_locations():
     data = []
     for row in mycursor:
        data.append({'id': row[0],
-                    'name': row[1],
+                    'name': row[2],
                     'lat': row[3],
                     'lon': row[4]})
     mycursor.close()
@@ -35,28 +35,10 @@ def get_locations():
 
 app = Flask(__name__)
 
-posts = [
-    { 
-    'author': 'Conor',
-    'title':'blog post 1',
-    'content': 'First post content',
-    'date_posted' : 'Feb 23, 2020'
-    },
-
- { 'author': 'JiJi',
-    'title':'blog post 2',
-    'content': 'Seoncd post content',
-    'date_posted' : 'Feb 23, 2020'
-    }
-
-]
-
-locationdata = get_locations()
-
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', posts=posts, locationdata=locationdata)
+    return render_template('home.html', locationdata=get_locations())
 
 @app.route('/about')
 def about(): 
