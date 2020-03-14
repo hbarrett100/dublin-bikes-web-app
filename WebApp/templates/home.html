@@ -4,14 +4,50 @@
 <!-- to inherit start a block -->
 {% block content %}
 
-<!-- to loop through posts list made on test.py -->
-{% for post in posts %}
+<div id="map"></div>
+<script>
+    // create global variables
+    var map;
+    var infowindow;
 
-<!-- for variables use double curly braces -->
-<h1>{{ post.title }}</h1>
-<p>By {{ post.author }} on {{ post.date_posted }}</p>
-<p>{{ post.content}} </p>
-{% endfor %}
+    // get location data from flask
+    locData = JSON.parse('{{ locationdata|tojson }}')
+
+    // function to create map called upon google connection to API below
+    function initMap() {
+
+        // create infowindow
+        infowindow = new google.maps.InfoWindow();
+ 
+        var dublin = { lat: 53.3498, lng: -6.2603 };
+        // The map, centered at Dublin
+        map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 13, center: dublin });
+
+
+        var marker, i;
+
+// loop through locdata to add markers to map
+        for (i = 0; i < locData.length; i++) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
+                map: map
+            });
+
+// add on-click function using closure and IIFE
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                return function () {
+                    infowindow.setContent(locData[i]["name"]);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+    }
+
+</script>
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
 
 <!-- end the block. The word content not required -->
 {% endblock content %}
