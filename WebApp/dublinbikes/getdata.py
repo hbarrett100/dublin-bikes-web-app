@@ -12,7 +12,6 @@ def get_locations():
         )
 
         mycursor = mydb.cursor()
-
         mycursor.execute(sql_statement)
 
         print(mycursor)
@@ -23,11 +22,10 @@ def get_locations():
     data = []
     for row in mycursor:
        data.append({'id': row[0],
+                    'name': row[2],
                     'lat': row[3],
                     'lon': row[4]})
     mycursor.close()
     mydb.close()
 
     return data
-
-print(get_locations())
