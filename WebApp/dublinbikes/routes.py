@@ -1,7 +1,7 @@
 from flask import render_template, url_for
-from dublinbikes.getdata import get_locations
 from dublinbikes import app
-
+from dublinbikes.getdata import get_locations
+print(app)
 @app.route('/')
 @app.route('/home')
 def home():

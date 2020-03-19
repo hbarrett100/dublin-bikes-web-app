@@ -1,4 +1,4 @@
-from dublinbikes import app
+from dublinbikes import app, routes
 
 if __name__ == '__main__':
     app.run(debug=True)
