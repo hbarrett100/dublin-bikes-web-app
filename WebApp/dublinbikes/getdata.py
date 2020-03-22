@@ -33,12 +33,12 @@ def get_locations():
 
 def get_current_station_data(id):
     import mysql.connector
-    sql_statement = ("SELECT * " 
-                    "FROM dynamicinfo " 
-                    "WHERE `time` = (SELECT MAX(`time`) " 
-                    "FROM dynamicinfo " 
-                    f"WHERE `id` ={id}) "
-                    f"AND `id` ={id}")
+    # sql_statement = ("SELECT * " 
+    #                 "FROM dynamicinfo " 
+    #                 "WHERE `time` = (SELECT MAX(`time`) " 
+    #                 "FROM dynamicinfo " 
+    #                 f"WHERE `id` ={id}) "
+    #                 f"AND `id` ={id}")
     try:
         # Connect to the RDS database
         mydb = mysql.connector.connect(
@@ -49,24 +49,31 @@ def get_current_station_data(id):
         )
 
         mycursor = mydb.cursor()
-        mycursor.execute(sql_statement)
+        # mycursor.execute(sql_statement)
+        mycursor.callproc('get_stand_info_by_id', [id, ])
+        result = mycursor.stored_results()
 
-        print(mycursor)
+
+        print(result)
     except mysql.connector.Error as err:
 
         print("SOMETHING WENT WRONG:", err)
 
     data = []
-    for row in mycursor:
-       data.append({'id': row[0],
-                    'availstands': row[1],
-                    'availbikes': row[2],
-                    'status': row[3],
-                    'time': str(row[4]),
-                    'banking': row[5],
-                    'bonus': row[6],
-                    'numbikestands': row[7],
-                    })
+    # for row in mycursor:
+
+    for result in mycursor.stored_results():
+        # station = result.fetchall()
+        for row in result.fetchall():
+            data.append({'id': row[0],
+                            'availstands': row[1],
+                            'availbikes': row[2],
+                            'status': row[3],
+                            'time': str(row[4]),
+                            'banking': row[5],
+                            'bonus': row[6],
+                            'numbikestands': row[7],
+                            })
 
     mycursor.close()
     mydb.close()
