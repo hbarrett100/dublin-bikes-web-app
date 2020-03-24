@@ -39,7 +39,8 @@
                 return function () {
                     infowindow.setContent(locData[i]["name"]);
                     infowindow.open(map, marker);
-                    
+                    // send get request with id of station
+                    // execute function once results have been returned from get request
                     $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
                         let content = "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
                         content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";

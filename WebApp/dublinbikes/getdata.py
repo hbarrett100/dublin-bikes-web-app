@@ -33,12 +33,6 @@ def get_locations():
 
 def get_current_station_data(id):
     import mysql.connector
-    # sql_statement = ("SELECT * " 
-    #                 "FROM dynamicinfo " 
-    #                 "WHERE `time` = (SELECT MAX(`time`) " 
-    #                 "FROM dynamicinfo " 
-    #                 f"WHERE `id` ={id}) "
-    #                 f"AND `id` ={id}")
     try:
         # Connect to the RDS database
         mydb = mysql.connector.connect(
@@ -49,21 +43,19 @@ def get_current_station_data(id):
         )
 
         mycursor = mydb.cursor()
-        # mycursor.execute(sql_statement)
+        # called mysql stored procedure giving id as an argument
         mycursor.callproc('get_stand_info_by_id', [id, ])
         result = mycursor.stored_results()
 
-
-        print(result)
     except mysql.connector.Error as err:
 
         print("SOMETHING WENT WRONG:", err)
 
+# create empty array
     data = []
-    # for row in mycursor:
 
+# iterate through results of mysql stored procedure and append to array
     for result in mycursor.stored_results():
-        # station = result.fetchall()
         for row in result.fetchall():
             data.append({'id': row[0],
                             'availstands': row[1],
