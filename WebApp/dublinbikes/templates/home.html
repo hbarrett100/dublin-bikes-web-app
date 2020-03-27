@@ -37,19 +37,22 @@
 // add on-click function using closure and IIFE
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent(locData[i]["name"]);
-                    infowindow.open(map, marker);
                     // send get request with id of station
                     // execute function once results have been returned from get request
                     $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
-                        let content = "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                        let content = "<h5>" + locData[i]["name"] + "</h5>";
+                        content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
                         content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
                         content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
                         content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                        content += "<p>Bonus: " + stationInfo[0]["bonus"] + "</p>";
                         content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-                        $("#station-info").html(content);
+
+                        // add content of get request to info window
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
                     });
+                    
+                    
 
                 }
             })(marker, i));

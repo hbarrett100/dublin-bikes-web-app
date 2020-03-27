@@ -16,6 +16,8 @@ def about():
 
 @app.route('/query')
 def query():
+    # get the argument from the get request
     id = request.args.get('id')
+    # invoke function to run sql query and store results
     station_info = json.dumps(get_current_station_data(id))
     return station_info
