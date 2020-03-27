@@ -25,38 +25,60 @@
             document.getElementById('map'), { zoom: 13, center: dublin });
 
 
-        var marker, i;
+        var marker, i, colour;
 
-// loop through locdata to add markers to map
-        for (i = 0; i < locData.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
-                map: map
-            });
+        let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
+        let greenMarker = "{{ url_for('static', filename='images/green-dot.png') }}"
+        let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
+        let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
-// add on-click function using closure and IIFE
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    // send get request with id of station
-                    // execute function once results have been returned from get request
-                    $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
-                        let content = "<h5>" + locData[i]["name"] + "</h5>";
-                        content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                        content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                        content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                        content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                        content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+        $.getJSON("/query", { id: "all" }, function (allStationInfo) {
 
-                        // add content of get request to info window
-                        infowindow.setContent(content);
-                        infowindow.open(map, marker);
-                    });
-                    
-                    
-
+            // console.log(locData)
+            // loop through locdata to add markers to map
+            for (i = 0; i < locData.length; i++) {
+                let availbikes = allStationInfo[locData[i]["id"]]["availbikes"];
+                if(availbikes <= 3){
+                    colour = redMarker;
+                } else if (4 <= availbikes && availbikes <= 10){
+                    colour = yellowMarker;
+                } else if (10 < availbikes){
+                    colour = greenMarker;
+                } else {
+                    colour = purpleMarker;
                 }
-            })(marker, i));
-        }
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
+                    map: map,
+                    icon: {
+                        url:  colour
+                    }
+                });
+
+    // add on-click function using closure and IIFE
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        // send get request with id of station
+                        // execute function once results have been returned from get request
+                        $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
+                            let content = "<h5>" + locData[i]["name"] + "</h5>";
+                            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
+                            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+                            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+
+                            // add content of get request to info window
+                            infowindow.setContent(content);
+                            infowindow.open(map, marker);
+                        });
+                        
+                        
+
+                    }
+                })(marker, i));
+            }
+        });
     }
 
 </script>
