@@ -41,14 +41,8 @@
                 position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
                 map: map
             });
-            markerArray.push(marker);
-
-           
-      }
-// create marker clusters using array of markers
-      var markerCluster = new MarkerClusterer(map, markerArray,
-            {imagePath: '/static/images/cluster_images/m'});
-
+            markerArray.push(marker);   
+            
 // add on-click function using closure and IIFE
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
@@ -67,16 +61,18 @@
                         infowindow.open(map, marker);
                     });
                     
-                    
-
                 }
             })(marker, i));
         }
 
+        // create marker clusters using array of markers
+        var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
+    }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
+    
 
 <!-- end the block. The word content not required -->
 {% endblock content %}
