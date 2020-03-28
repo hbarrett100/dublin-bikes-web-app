@@ -29,54 +29,78 @@
                 disableDefaultUI: true,
                 zoomControl: true,
                  });
-
-
-        var marker, i;
-
-//    create empty array to add markers to
+      
         var markerArray = [];
-        // loop through locdata to add markers to map
-        for (i = 0; i < locData.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
-                map: map
-            });
-            markerArray.push(marker);
+        var marker, i, colour;
 
-           
-      }
-// create marker clusters using array of markers
-      var markerCluster = new MarkerClusterer(map, markerArray,
-            {imagePath: '/static/images/cluster_images/m'});
+        let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
+        let greenMarker = "{{ url_for('static', filename='images/green-dot.png') }}"
+        let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
+        let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
-// add on-click function using closure and IIFE
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    // send get request with id of station
-                    // execute function once results have been returned from get request
-                    $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
-                        let content = "<h5>" + locData[i]["name"] + "</h5>";
-                        content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                        content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                        content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                        content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                        content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+        $.getJSON("/query", { id: "all" }, function (allStationInfo) {
 
-                        // add content of get request to info window
-                        infowindow.setContent(content);
-                        infowindow.open(map, marker);
-                    });
-                    
-                    
-
+            // console.log(locData)
+            // loop through locdata to add markers to map
+            for (i = 0; i < locData.length; i++) {
+                let availbikes = allStationInfo[locData[i]["id"]]["availbikes"];
+                if(availbikes <= 3){
+                    colour = redMarker;
+                } else if (4 <= availbikes && availbikes <= 10){
+                    colour = yellowMarker;
+                } else if (10 < availbikes){
+                    colour = greenMarker;
+                } else {
+                    colour = purpleMarker;
                 }
-            })(marker, i));
-        }
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
+                    map: map,
+                    icon: {
+                        url:  colour
+                    }
+                });
 
+    // add on-click function using closure and IIFE
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
+                        // send get request with id of station
+                        // execute function once results have been returned from get request
+                        $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
+                            let content = "<h5>" + locData[i]["name"] + "</h5>";
+                            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
+                            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+                            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+
+                            // add content of get request to info window
+                            infowindow.setContent(content);
+                            infowindow.open(map, marker);
+                        });
+                        
+                        
+
+                    }
+                })(marker, i));
+              
+                markerArray.push(marker); 
+            }
+          
+                  // create marker clusters using array of markers
+        var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
+        });
+    }
+
+
+    //     // create marker clusters using array of markers
+    //     var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
+    // }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
+    
 
 <!-- end the block. The word content not required -->
 {% endblock content %}
