@@ -47,63 +47,18 @@
       <div class="col-md-8">
         {% block content %}{% endblock %}
       </div>
-      <div class="col-md-4">
-        <!--<div id="openweathermap-widget-24"></div>-->
-        <div class="content-section">
-          <a class="weatherwidget-io" href="https://forecast7.com/en/53d35n6d26/dublin/" data-label_1="DUBLIN"
-            data-label_2="WEATHER" data-mode="Current" data-theme="pure">DUBLIN WEATHER</a>
-          <h3>Our Sidebar</h3>
-          <p class='text-muted'>You can put any information here you'd like.
-            <ul class="list-group">
-              <li class="list-group-item list-group-item-light">Latest Posts</li>
-              <li class="list-group-item list-group-item-light">Announcements</li>
-              <li class="list-group-item list-group-item-light">Calendars</li>
-              <li class="list-group-item list-group-item-light">etc</li>
-            </ul>
-          </p>
-        </div>
-      </div>
     </div>
   </main>
   <!-- home and about templates will inherit this layout page -->
   <!--  this page is parent so can remove stuff from home and about -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
     integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
-  <script>
-    window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];
-    window.myWidgetParam.push({
-      id: 24,
-      cityid: '2964574',
-      appid: '16fb93e92d3bd8aefd9b647c1a8f6acf',
-      units: 'metric',
-      containerid: 'openweathermap-widget-24',
-    });
-    (function () {
-      var script = document.createElement('script');
-      script.async = true;
-      script.charset = "utf-8";
-      script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(script, s);
-    })();
-  </script>
-  <script>
-    !function (d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (!d.getElementById(id)) {
-        js = d.createElement(s);
-        js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js';
-        fjs.parentNode.insertBefore(js, fjs);
-      }
-    }(document, 'script', 'weatherwidget-io-js');
-  </script>
+
 </body>
 
 </html>
