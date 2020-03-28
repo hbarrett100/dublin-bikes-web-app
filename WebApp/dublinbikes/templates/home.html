@@ -22,9 +22,15 @@
         var dublin = { lat: 53.3498, lng: -6.2603 };
         // The map, centered at Dublin
         map = new google.maps.Map(
-            document.getElementById('map'), { zoom: 13, center: dublin });
-
-
+            document.getElementById('map'), {
+                zoom: 13, 
+                center: dublin, 
+                // disable all default map controls except zoom
+                disableDefaultUI: true,
+                zoomControl: true,
+                 });
+      
+        var markerArray = [];
         var marker, i, colour;
 
         let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
@@ -77,14 +83,24 @@
 
                     }
                 })(marker, i));
+              
+                markerArray.push(marker); 
             }
+          
+                  // create marker clusters using array of markers
+        var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
         });
     }
 
-</script>
 
+        // create marker clusters using array of markers
+        var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
+    }
+</script>
+<script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
+    
 
 <!-- end the block. The word content not required -->
 {% endblock content %}
