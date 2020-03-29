@@ -65,10 +65,11 @@
     // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+                        // Set graph in 
                         readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
-                        var stationdata = JSON.parse(text);
-                        setGraph(stationdata[locData[i]["id"]]);
-                    });
+                            var stationdata = JSON.parse(text);
+                            setGraph(stationdata[locData[i]["id"]]);
+                        });
 
                         // send get request with id of station
                         // execute function once results have been returned from get request
@@ -84,9 +85,6 @@
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
                         });
-                        
-                        
-
                     }
 
                     readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
@@ -140,8 +138,8 @@
 
     function setGraph(station) {
         var hours = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"];
-        var availbikes = station['bikes'].map(function(x) { return x * station['numbikestands'];});
-        var availstands = station['stands'].map(function(x) { return x * station['numbikestands'];});
+        var availbikes = station['bikes'].map(function(x) { return Math.round(x * station['numbikestands']);});
+        var availstands = station['stands'].map(function(x) { return Math.round(x * station['numbikestands']);});
 
         console.log(availbikes);
 
