@@ -5,8 +5,26 @@
 {% block content %}
 
 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+<div>
+  <input id="timepicker" type="text" class="timepicker"/>
+</div>
 <div id="map"></div>
 <script>
+$(document).ready(function(){
+    $('#timepicker').timepicker({
+      timeFormat: 'HH:mm',
+      interval: 30,
+      minTime: '05:00',
+      maxTime: '23:30',
+      scrollbar: true
+    });
+});
+$('#setTimeButton').on('click', function (){
+	$('#timepicker').timepicker('setTime', new Date());
+});
+
+
+
   // create global variables
   var map;
   var infowindow;
