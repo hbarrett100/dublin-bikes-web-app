@@ -14,6 +14,9 @@
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
+    // Get model predictions from flask
+    modelData = JSON.parse('{{ modeldata|tojson }}')
+
     // function to create map called upon google connection to API below
     function initMap() {
 
@@ -66,7 +69,7 @@
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
                         // Set graph to predicted availability for selected stop
-                        setGraph(locData[i]["id"]);
+                        setGraph(chart,locData[i]["id"]);
 
                         // send get request with id of station
                         // execute function once results have been returned from get request
@@ -116,17 +119,15 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> -->
 
 <script>
-    // read a given json file 
-    function readTextFile(file, callback) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType('application/json')
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function() {
-            if (rawFile.readyState === 4 & rawFile.status == "200") {
-                callback(rawFile.responseText);
-            }
-        }
-        rawFile.send(null)
+    // Set graph data to particular data for selected stop
+    function setGraph(chart,stationid) {
+        station = modelData[stationid];
+        var availbikes = station['availbikes']
+            var availstands = station['availstands']
+
+            chart.data.datasets[0].data = availbikes;
+            chart.data.datasets[1].data = availstands;
+            chart.update();
     }
 
     // graph configuration
@@ -152,10 +153,10 @@
 	    	},
 	    	options: {
 	    		responsive: true,
-	    		// title: {
-	    		// 	display: true,
-	    		// 	text: 'Chart.js Line Chart'
-	    		// },
+	    		title: {
+	    			display: true,
+	    			text: 'Average Bike & Stand Availability'
+	    		},
 	    		tooltips: {
 	    			mode: 'index',
 	    			intersect: false,
@@ -190,22 +191,6 @@
     // Create chart in myChart div
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, config);
-
-    // Set graph data to particular data for selected stop
-    function setGraph(stationid) {
-        readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
-                            var stationdata = JSON.parse(text);
-                            var station = stationdata[stationid];
-                            var availbikes = station['bikes'].map(function(x) { return Math.round(x * station['numbikestands']);});
-                            var availstands = station['stands'].map(function(x) { return Math.round(x * station['numbikestands']);});
-
-                            chart.data.datasets[0].data = availbikes;
-                            chart.data.datasets[1].data = availstands;
-                            chart.update();
-                        });
-    }
-
-    
 </script>
 <!-- end the block. The word content not required -->
 {% endblock content %}

@@ -111,3 +111,43 @@ def get_all_station_data():
     mydb.close()
 
     return data
+
+def get_model_predictions():
+    import mysql.connector
+    try:
+        mydb = mysql.connector.connect(
+            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
+            user="admin",
+            passwd="fmRdzKkP6mTtwEEsCByh",
+            database="dublinbikes"
+        )
+        mycursor = mydb.cursor()
+        
+        mycursor.callproc('get_predictions')
+        result = mycursor.stored_results()
+        
+    except mysql.connector.Error as err:
+        print("SOMETHING WENT WRONG:", err)
+        if 'cursor' in locals():
+            cursor.close()
+        if 'mydb' in locals():
+            mydb.close()
+        exit(1)
+        
+    data = {}
+    for result in mycursor.stored_results():
+        stationid = None
+        for row in result.fetchall():
+            if row[0] != stationid:
+                stationid = row[0]
+                data[stationid] = dict()
+                data[stationid]['hour'] = []
+                data[stationid]['availbikes'] = []
+                data[stationid]['availstands'] = []
+                data[stationid]['hour'] += [row[1]]
+            data[stationid]['availbikes'] += [row[2]]
+            data[stationid]['availstands'] += [row[3]]
+    mycursor.close()
+    mydb.close()
+    
+    return data
