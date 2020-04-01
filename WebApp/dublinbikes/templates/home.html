@@ -11,11 +11,6 @@
 </div>
 <div id="map"></div>
 <script>
-
-
-
-
-
     // create global variables
     var map;
     var infowindow;
@@ -293,9 +288,11 @@
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
                         });
+                            // get current time using Date object
                             let d = new Date();
                             let hour = d.getHours();
                             let minutes = d.getMinutes();
+                            // round time nearest half hour
                             if (minutes < 15) {
                                 minutes = 0;
                             } else if (minutes >= 15 && minutes < 45) {
@@ -305,13 +302,10 @@
                                 hour = (hour + 1) % 24;
                             }
                             let currentTime = hour + ":" + minutes;
-
+                            // create jquery timepicker
                             $('#timepicker').timepicker({
                                 timeFormat: 'HH:mm',
                                 interval: 30,
-                                //   minTime: '05:00',
-                                //   maxTime: '00:30',
-
                                 scrollbar: true,
                                 defaultTime: currentTime,
                                 dynamic: false
