@@ -1,7 +1,9 @@
 from flask import render_template, url_for, request, flash, redirect
-from dublinbikes import app
+from dublinbikes import app, bcrypt
 from dublinbikes.getdata import get_locations, get_current_station_data, get_all_station_data
+from dublinbikes.users import get_password, add_user, add_favourite_station, get_favourite_stations, check_email
 from dublinbikes.forms import RegistrationForm, LoginForm
+
 import json
 
 @app.route('/')
@@ -19,8 +21,12 @@ def about():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f"Account created succesfully! Welcome, {form.username.data}!", "success")
-        return redirect(url_for("home"))
+        hashed_pwd = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        add_user(form.email.data, hashed_pwd)
+
+        flash(f"Account created succesfully with email {form.email.data}. Please log in to proceed", "success")
+
+        return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
 

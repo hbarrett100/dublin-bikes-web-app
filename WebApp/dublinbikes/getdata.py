@@ -1,5 +1,6 @@
+import mysql.connector
+
 def get_locations():
-    import mysql.connector
     sql_statement = ("select * FROM staticinfo")
 
     try:
@@ -32,7 +33,6 @@ def get_locations():
 
 
 def get_current_station_data(id):
-    import mysql.connector
     try:
         # Connect to the RDS database
         mydb = mysql.connector.connect(
