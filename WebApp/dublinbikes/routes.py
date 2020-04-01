@@ -1,13 +1,13 @@
 from flask import render_template, url_for, request
 from dublinbikes import app
-from dublinbikes.getdata import get_locations, get_current_station_data, get_all_station_data
+from dublinbikes.getdata import get_locations, get_current_station_data, get_all_station_data, get_model_predictions
 import json
 
 print(app)
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', locationdata=get_locations())
+    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions())
 
 
 @app.route('/about')
