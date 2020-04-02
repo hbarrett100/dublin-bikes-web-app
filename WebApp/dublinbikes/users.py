@@ -182,10 +182,10 @@ class User(UserMixin):
 
         for result in results:
             u = result.fetchall()[0]
-            self.id = u[0]
-            self.email = u[1]
-            self.password = u[2]
-            self.stations = u[3]
+            self.email = u[0]
+            self.password = u[1]
+            self.stations = u[2]
+            self.emailvalidated = u[3]
 
 
         mycursor.close()
@@ -201,10 +201,33 @@ class User(UserMixin):
         print(f"updating password: {new_pwd}")
 
     def update_email(self, new_email):
+        try:
+            # Connect to the RDS database
+            mydb = mysql.connector.connect(
+                host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
+                user="admin",
+                passwd="fmRdzKkP6mTtwEEsCByh",
+                database="dublinbikes"
+            )
+
+            mycursor = mydb.cursor()
+
+            # called mysql stored procedure giving email as an argument
+            mycursor.callproc('update_email', [self.email, new_email])
+            mydb.commit()
+
+        except mysql.connector.Error as err:
+
+            print("SOMETHING WENT WRONG:", err)
+
+        mycursor.close()
+        mydb.close()
+
+        self.email = new_email
         print(f"updating email, old: {self.email}, new: {new_email}")
 
 
     def __repr__(self):
-        return f"{self.id}, {self.email}, {self.password}, {self.stations}"
+        return f"{self.email}, {self.password}, {self.stations}"
 
 

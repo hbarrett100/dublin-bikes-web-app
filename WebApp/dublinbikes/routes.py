@@ -28,7 +28,8 @@ def register():
     if form.validate_on_submit():
         hashed_pwd = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         add_user(form.email.data, hashed_pwd)
-
+        flash(f"Registration successful. Please login to proceed.", "success")
+        return redirect(url_for("login"))
     return render_template("register.html", title="Register", form=form)
 
 
