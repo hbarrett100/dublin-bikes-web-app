@@ -7,9 +7,10 @@
 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 <div>
     <input id="timepicker" type="text" class="timepicker" />
-    <input type = "text" id = "datepicker" class="datepicker"></p>
+    
 
 </div>
+<div id = "datepicker" class="datepicker"></div>
 <div id="map"></div>
 <script>
     // create global variables
@@ -311,7 +312,13 @@
                                 defaultTime: currentTime,
                                 dynamic: false
                         });
-                            $( "#datepicker" ).datepicker();
+                            $( "#datepicker" ).datepicker(
+                                {maxDate: "+5d",
+                                minDate: "0d",
+                                showAnim: "slideDown",
+   
+                                
+                        });
 
 
                     }
