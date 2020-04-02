@@ -1,4 +1,5 @@
-from dublinbikes.getdata import get_locations, get_current_station_data, get_all_station_data
+from dublinbikes import login_manager
+from flask_login import UserMixin
 import mysql.connector
 
 def get_password(email):
@@ -156,7 +157,8 @@ def load_user(email):
     else:
         return None
 
-class User():
+
+class User(UserMixin):
     def __init__(self, email):
         try:
             # Connect to the RDS database
@@ -189,6 +191,9 @@ class User():
         mycursor.close()
         mydb.close()
 
+    def get_id(self):
+        return self.email
+
     def __repr__(self):
         return f"{self.id}, {self.email}, {self.password}, {self.stations}"
 
@@ -199,4 +204,5 @@ class User():
 
 
 
-load_user("cshort@tcd.ie")
+u = load_user("csho@tcd.ie")
+print(u)
