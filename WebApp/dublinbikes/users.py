@@ -194,15 +194,17 @@ class User(UserMixin):
     def get_id(self):
         return self.email
 
+    def update_fav_stations(self, stations):
+        print("updating stations")
+
+    def update_password(self, new_pwd):
+        print(f"updating password: {new_pwd}")
+
+    def update_email(self, new_email):
+        print(f"updating email, old: {self.email}, new: {new_email}")
+
+
     def __repr__(self):
         return f"{self.id}, {self.email}, {self.password}, {self.stations}"
 
 
-
-# u = User("cshorttcd.ie")
-# print(str(u))
-
-
-
-u = load_user("csho@tcd.ie")
-print(u)

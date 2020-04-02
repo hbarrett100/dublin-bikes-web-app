@@ -22,3 +22,19 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class UpdateEmail(FlaskForm):
+    email = StringField('New Email',
+                        validators=[DataRequired(), Email()])
+    password = PasswordField('Please enter password', validators=[DataRequired()])
+    submit = SubmitField('Update Email')
+
+class UpdatePassword(FlaskForm):
+    old_password = PasswordField('Please enter current password',
+                             validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm New Password',
+                                     validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
+
