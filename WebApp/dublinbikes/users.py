@@ -224,7 +224,6 @@ class User(UserMixin):
         mydb.close()
 
         self.email = new_email
-        print(f"updating email, old: {self.email}, new: {new_email}")
 
 
     def __repr__(self):

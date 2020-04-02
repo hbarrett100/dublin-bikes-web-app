@@ -83,9 +83,12 @@ def updateemail():
     email_form = UpdateEmail()
     password_form = UpdatePassword()
 
-    if email_form.validate_on_submit():
-        flash(f"Email updated.", "success")
+    if email_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, email_form.password.data):
         current_user.update_email(email_form.email.data)
+        logout_user()
+        user = load_user(email_form.email.data)
+        login_user(user)
+        flash(f"Email updated.", "success")
         return redirect(url_for("account"))
     return render_template("account.html", title="Account", email_form=email_form, password_form=password_form)
 
