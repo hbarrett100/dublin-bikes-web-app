@@ -84,8 +84,6 @@ body {
   }
 
 
-
-
   /* Style the close button (span) */
 .close {
   cursor: pointer;
@@ -100,3 +98,8 @@ body {
 }
 
 .close:hover {color: rgb(65, 65, 65);}
+
+#nav-bar-email {
+  color:#cbd5db
+
+}

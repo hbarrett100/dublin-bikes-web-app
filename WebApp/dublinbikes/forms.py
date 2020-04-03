@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
 
     def validate_email(self, email):
         if check_email(email.data):
-            raise ValidationError("This email is already in use")
+            raise ValidationError("This email is already in use.")
 
 
 class LoginForm(FlaskForm):
@@ -29,6 +29,10 @@ class UpdateEmail(FlaskForm):
                         validators=[DataRequired(), Email()])
     password = PasswordField('Please enter password', validators=[DataRequired()])
     submit = SubmitField('Update Email')
+
+    def validate_email(self, email):
+        if check_email(email.data):
+            raise ValidationError("This email is already in use.")
 
 class UpdatePassword(FlaskForm):
     old_password = PasswordField('Please enter current password',

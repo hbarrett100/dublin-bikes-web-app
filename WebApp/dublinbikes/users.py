@@ -194,13 +194,8 @@ class User(UserMixin):
     def get_id(self):
         return self.email
 
-    def update_fav_stations(self, stations):
-        print("updating stations")
 
-    def update_password(self, new_pwd):
-        print(f"updating password: {new_pwd}")
-
-    def update_email(self, new_email):
+    def update_feature(self, data, feature):
         try:
             # Connect to the RDS database
             mydb = mysql.connector.connect(
@@ -213,18 +208,20 @@ class User(UserMixin):
             mycursor = mydb.cursor()
 
             # called mysql stored procedure giving email as an argument
-            mycursor.callproc('update_email', [self.email, new_email])
+            if feature == "email":
+                mycursor.callproc('update_email', [self.email, data])
+            elif feature == "password":
+                mycursor.callproc('update_password', [self.email, data])
+            elif feature == "stations":
+                mycursor.callproc('update_stations', [self.email, data])
+                
             mydb.commit()
-
         except mysql.connector.Error as err:
 
             print("SOMETHING WENT WRONG:", err)
 
         mycursor.close()
         mydb.close()
-
-        self.email = new_email
-
 
     def __repr__(self):
         return f"{self.email}, {self.password}, {self.stations}"

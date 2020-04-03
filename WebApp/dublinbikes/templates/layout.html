@@ -37,6 +37,7 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
+            <span class="nav-item nav-link" id="nav-bar-email">{{ current_user.email }}</span>
             <a class="nav-item nav-link" href="/logout">Log Out</a>
             <a class="nav-item nav-link" href="/account">Account</a>
             {% else %}

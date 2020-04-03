@@ -96,7 +96,7 @@ def updateemail():
     password_form = UpdatePassword()
 
     if email_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, email_form.password.data):
-        current_user.update_email(email_form.email.data)
+        current_user.update_feature(email_form.email.data, "email")
         logout_user()
         user = load_user(email_form.email.data)
         login_user(user)
@@ -113,7 +113,10 @@ def updatepwd():
     email_form = UpdateEmail()
     password_form = UpdatePassword()
 
-    if password_form.validate_on_submit():
+    if password_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, password_form.old_password.data):
+        
+        hashed_pwd = bcrypt.generate_password_hash(password_form.new_password.data).decode("utf-8")
+        current_user.update_feature(hashed_pwd, "password")
         flash(f"Password updated.", "success")
         return redirect(url_for("account"))
     return render_template("account.html", title="Account", email_form=email_form, password_form=password_form)
