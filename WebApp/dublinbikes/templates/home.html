@@ -10,7 +10,27 @@
     
 
 </div>
-<div id = "datepicker" class="datepicker"></div>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-outline-info active">
+      <span class="date-text" id = "button1"></span>
+      <input type="radio" name="options" id="option1" autocomplete="off" checked>
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id="button2"></span>
+      <input type="radio" name="options" id="option2" autocomplete="off">
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id = "button3"></span>
+      <input type="radio" name="options" id="option3" autocomplete="off">
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id = "button4"></span>
+        <input type="radio" name="options" id="option4" autocomplete="off">
+      </label>
+      <label class="btn btn-outline-info">
+        <span class="date-text" id = "button5"></span>
+        <input type="radio" name="options" id="option5" autocomplete="off">
+  </div>
 <div id="map"></div>
 <script>
     // create global variables
@@ -275,7 +295,8 @@
 
                 // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                    return function () {
+                    return function () 
+                    {
                         // send get request with id of station
                         // execute function once results have been returned from get request
                         $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
@@ -312,16 +333,25 @@
                                 defaultTime: currentTime,
                                 dynamic: false
                         });
-                            $( "#datepicker" ).datepicker(
-                                {maxDate: "+5d",
-                                minDate: "0d",
-                                showAnim: "slideDown",
    
-                                
-                        });
+                            const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+                            $('.date-text').each(function(index, obj){
+                                let date = new Date();
+                                date.setDate(date.getDate() + index);
+                                if (date.getDate() < 10) {
+                                    newdate = 0 + "" + date.getDate(); 
+                                }
+                                obj.innerHTML = weekdays[date.getDay()] + " " + newdate + " " + months[date.getMonth()];
 
-                    }
+                            });
+                            
+                            
+
+                    } 
+
+                    
                 })(marker, i));
 
                 markerArray.push(marker);

@@ -124,9 +124,3 @@ body {
   #pac-input:focus {
     border-color: #4d90fe;
   }
-
-  .ui-datepicker { 
-    width: 10px;
-    font-size: 5%;
-
-  }
