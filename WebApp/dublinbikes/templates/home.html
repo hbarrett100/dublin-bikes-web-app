@@ -8,7 +8,7 @@
 <div>
     <input id="timepicker" type="text" class="timepicker" />
     
-
+<!-- date buttons -->
 </div>
 <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-outline-info active">
@@ -333,11 +333,13 @@
                                 defaultTime: currentTime,
                                 dynamic: false
                         });
-   
+                            // date buttons
                             const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
                             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+                            // loop through all elements in the class date-text 
                             $('.date-text').each(function(index, obj){
+                                // create Date object
                                 let date = new Date();
                                 date.setDate(date.getDate() + index);
                                 if (date.getDate() < 10) {
@@ -346,9 +348,6 @@
                                 obj.innerHTML = weekdays[date.getDay()] + " " + newdate + " " + months[date.getMonth()];
 
                             });
-                            
-                            
-
                     } 
 
                     
