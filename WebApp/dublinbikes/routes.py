@@ -10,7 +10,6 @@ import json
 @app.route('/')
 @app.route('/home')
 def home():
-    print("home", current_user.is_authenticated)
     return render_template('home.html', locationdata=get_locations())
 
 
@@ -21,34 +20,47 @@ def about():
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
+    # Check is user is logged in, if so they can't access regiter route
     if current_user.is_authenticated:
         flash(f"Already logged in with email {current_user.email}. Please log out to register another account.", "danger")
         return redirect(url_for("home"))
+
     form = RegistrationForm()
+
+    # Check if registration was valid, if so redirect to login page
     if form.validate_on_submit():
         hashed_pwd = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         add_user(form.email.data, hashed_pwd)
         flash(f"Registration successful. Please login to proceed.", "success")
         return redirect(url_for("login"))
+
+    # Otherwise display register form
     return render_template("register.html", title="Register", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # Check is user is logged in, if so they can't access login route
     if current_user.is_authenticated:
         flash(f"Already logged in with email {current_user.email}.", "success")
         return redirect(url_for("home"))
+
     form = LoginForm()
+
+    # Check if the login for is filled in correctly
     if form.validate_on_submit():
         user = load_user(form.email.data)
         print(user)
+        # Check if user and password match
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            # Log the user in and redirect to home page
             login_user(user, remember=form.remember.data)
             flash(f"Logged in with email {form.email.data}", "success")
             print("curr", current_user.is_authenticated)
             return redirect(url_for("home"))
         else:
             flash(f"Login failed, email and password do not match.", "danger")
+
     return render_template("login.html", title="Login", form=form)
 
 
