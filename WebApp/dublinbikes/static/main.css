@@ -82,3 +82,24 @@ body {
   .account-heading {
     font-size: 2.5rem;
   }
+
+
+  /* Style the close button (span) */
+.close {
+  cursor: pointer;
+  position: absolute;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  top: 20%;
+  right: 0%;
+  padding: 5px 10px;
+  transform: translate(0%, -50%);
+}
+
+.close:hover {color: rgb(65, 65, 65);}
+
+#nav-bar-email {
+  color:#cbd5db
+
+}
