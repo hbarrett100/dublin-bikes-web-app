@@ -4,6 +4,33 @@
 <!-- to inherit start a block -->
 {% block content %}
 
+<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+<div>
+    <input id="timepicker" type="text" class="timepicker" />
+    
+<!-- date buttons -->
+</div>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-outline-info active">
+      <span class="date-text" id = "button1"></span>
+      <input type="radio" name="options" id="option1" autocomplete="off" checked>
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id="button2"></span>
+      <input type="radio" name="options" id="option2" autocomplete="off">
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id = "button3"></span>
+      <input type="radio" name="options" id="option3" autocomplete="off">
+    </label>
+    <label class="btn btn-outline-info">
+        <span class="date-text" id = "button4"></span>
+        <input type="radio" name="options" id="option4" autocomplete="off">
+      </label>
+      <label class="btn btn-outline-info">
+        <span class="date-text" id = "button5"></span>
+        <input type="radio" name="options" id="option5" autocomplete="off">
+  </div>
 <div id="map"></div>
 
 <div id="prediction"></div>
@@ -24,18 +51,223 @@
 
         // create infowindow
         infowindow = new google.maps.InfoWindow();
- 
+
         var dublin = { lat: 53.3498, lng: -6.2603 };
         // The map, centered at Dublin
         map = new google.maps.Map(
             document.getElementById('map'), {
-                zoom: 13, 
-                center: dublin, 
-                // disable all default map controls except zoom
-                disableDefaultUI: true,
-                zoomControl: true,
-                 });
-      
+            zoom: 13,
+            center: dublin,
+            // disable all default map controls except zoom
+            disableDefaultUI: true,
+            zoomControl: true,
+            styles: [
+                {
+                    "featureType": "all",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "weight": "2.00"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "all",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#9c9c9c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "all",
+                    "elementType": "labels.text",
+                    "stylers": [
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "color": "#f2f2f2"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.man_made",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "saturation": -100
+                        },
+                        {
+                            "lightness": 45
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#eeeeee"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#7b7b7b"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "simplified"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "all",
+                    "stylers": [
+                        {
+                            "color": "#46bcec"
+                        },
+                        {
+                            "visibility": "on"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#c8d7d4"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#070707"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#ffffff"
+                        }
+                    ]
+                }
+            ]
+
+        });
+        // create search box
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+        });
         var markerArray = [];
         var marker, i, colour;
 
@@ -50,11 +282,11 @@
             // loop through locdata to add markers to map
             for (i = 0; i < locData.length; i++) {
                 let availbikes = allStationInfo[locData[i]["id"]]["availbikes"];
-                if(availbikes <= 3){
+                if (availbikes <= 3) {
                     colour = redMarker;
-                } else if (4 <= availbikes && availbikes <= 10){
+                } else if (4 <= availbikes && availbikes <= 10) {
                     colour = yellowMarker;
-                } else if (10 < availbikes){
+                } else if (10 < availbikes) {
                     colour = greenMarker;
                 } else {
                     colour = purpleMarker;
@@ -63,19 +295,23 @@
                     position: new google.maps.LatLng(locData[i]["lat"], locData[i]["lon"]),
                     map: map,
                     icon: {
-                        url:  colour
+                        url: colour
                     }
                 });
 
-    // add on-click function using closure and IIFE
+                // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+
+
                     return function () {
                         // Set graph to predicted availability for selected stop
                         setGraph(chart,locData[i]["id"]);
 
+
                         // send get request with id of station
                         // execute function once results have been returned from get request
-                        $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
+                        $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
                             let content = "<h5>" + locData[i]["name"] + "</h5>";
                             content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
                             content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
@@ -87,31 +323,73 @@
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
                         });
-                    }
+
+                            // get current time using Date object
+                            let d = new Date();
+                            let hour = d.getHours();
+                            let minutes = d.getMinutes();
+                            // round time nearest half hour
+                            if (minutes < 15) {
+                                minutes = 0;
+                            } else if (minutes >= 15 && minutes < 45) {
+                                minutes = 30;
+                            } else if (minutes > 45) {
+                                minutes = 0;
+                                hour = (hour + 1) % 24;
+                            }
+                            let currentTime = hour + ":" + minutes;
+                            // create jquery timepicker
+                            $('#timepicker').timepicker({
+                                timeFormat: 'HH:mm',
+                                interval: 30,
+                                scrollbar: true,
+                                defaultTime: currentTime,
+                                dynamic: false
+                            });
+                            // date buttons
+                            const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+                            // loop through all elements in the class date-text 
+                            $('.date-text').each(function(index, obj){
+                                // create Date object
+                                let date = new Date();
+                                date.setDate(date.getDate() + index);
+                                if (date.getDate() < 10) {
+                                    newdate = 0 + "" + date.getDate(); 
+                                }
+                                obj.innerHTML = weekdays[date.getDay()] + " " + newdate + " " + months[date.getMonth()];
+
+                            });
+                    } 
+
+
+                    
 
                     readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
                         var stationdata = JSON.parse(text);
                         setGraph(stationdata[7]);
                     });
+
                     
                 })(marker, i));
-              
-                markerArray.push(marker); 
+
+                markerArray.push(marker);
             }
-          
-                  // create marker clusters using array of markers
-        var markerCluster = new MarkerClusterer(map, markerArray,{maxZoom: 14, imagePath: '/static/images/cluster_images/m'});
+
+            // create marker clusters using array of markers
+            var markerCluster = new MarkerClusterer(map, markerArray, { maxZoom: 14, imagePath: '/static/images/cluster_images/m' });
         });
     }
-
 
     //     // create marker clusters using array of markers
     //     var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
     // }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap&libraries=places"></script>
+
+
 
 <canvas id="myChart"></canvas>
 
