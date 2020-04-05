@@ -1,7 +1,7 @@
 
 from flask import render_template, url_for, request, flash, redirect
 from dublinbikes import app, bcrypt
-from dublinbikes.getdata import get_locations, get_current_station_data, get_all_station_data
+from dublinbikes.getdata import * # import get_locations, get_current_station_data, get_all_station_data, 
 from dublinbikes.users import get_password, add_user, add_favourite_station, get_favourite_stations, check_email, load_user
 from dublinbikes.forms import RegistrationForm, LoginForm, UpdateEmail, UpdatePassword
 from flask_login import login_user, current_user, logout_user, login_required
