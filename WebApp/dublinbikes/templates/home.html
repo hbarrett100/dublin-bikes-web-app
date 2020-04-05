@@ -4,12 +4,13 @@
 <!-- to inherit start a block -->
 {% block content %}
 
-<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+<!--
 <div>
     <input id="timepicker" type="text" class="timepicker" />
-    
-<!-- date buttons -->
 </div>
+
+date buttons 
 <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-outline-info active">
       <span class="date-text" id = "button1"></span>
@@ -31,10 +32,44 @@
         <span class="date-text" id = "button5"></span>
         <input type="radio" name="options" id="option5" autocomplete="off">
   </div>
-<div id="map"></div>
 
-<div id="prediction"></div>
 
+<div id="prediction"></div> -->
+<div  id="map-container">
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    
+    <div id="map"></div>    
+    <div id="info-div">
+        <div>
+            <input id="timepicker" type="text" class="timepicker btn-info" />
+        </div>
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-outline-info active">
+              <span class="date-text" id = "button1"></span>
+              <input type="radio" name="options" id="option1" autocomplete="off" checked>
+            </label>
+            <label class="btn btn-outline-info">
+                <span class="date-text" id="button2"></span>
+              <input type="radio" name="options" id="option2" autocomplete="off">
+            </label>
+            <label class="btn btn-outline-info">
+                <span class="date-text" id = "button3"></span>
+              <input type="radio" name="options" id="option3" autocomplete="off">
+            </label>
+            <label class="btn btn-outline-info">
+                <span class="date-text" id = "button4"></span>
+                <input type="radio" name="options" id="option4" autocomplete="off">
+              </label>
+              <label class="btn btn-outline-info">
+                <span class="date-text" id = "button5"></span>
+                <input type="radio" name="options" id="option5" autocomplete="off">
+        </div>
+
+        <canvas id="myChart"></canvas>
+
+    </div>
+</div>
 <script>
     // create global variables
     var map;
@@ -61,6 +96,9 @@
             // disable all default map controls except zoom
             disableDefaultUI: true,
             zoomControl: true,
+            zoomControlOptions: {
+                    position: google.maps.ControlPosition.LEFT_BOTTOM
+                },
             styles: [
                 {
                     "featureType": "all",
@@ -305,7 +343,10 @@
 
 
                     return function () {
+                        $("#info-div").show();
                         // Set graph to predicted availability for selected stop
+                        
+
                         setGraph(chart,locData[i]["id"]);
 
 
@@ -358,7 +399,7 @@
                                 if (date.getDate() < 10) {
                                     newdate = 0 + "" + date.getDate(); 
                                 }
-                                obj.innerHTML = weekdays[date.getDay()] + " " + newdate + " " + months[date.getMonth()];
+                                obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
 
                             });
                     } 
@@ -381,17 +422,13 @@
             var markerCluster = new MarkerClusterer(map, markerArray, { maxZoom: 14, imagePath: '/static/images/cluster_images/m' });
         });
     }
-
-    //     // create marker clusters using array of markers
-    //     var markerCluster = new MarkerClusterer(map, markerArray,{imagePath: '/static/images/cluster_images/m'});
-    // }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap&libraries=places"></script>
 
 
 
-<canvas id="myChart"></canvas>
+
 
 <script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
 <script src="https://www.chartjs.org/samples/latest/utils.js"></script>

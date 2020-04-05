@@ -52,7 +52,7 @@
     </nav>
   </header>
   <main role="main" class="container">
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-8">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -63,10 +63,15 @@
         {% endwith %}
 
 
-        {% block content %}{% endblock %}
+        
       </div>
-    </div>
+    </div> -->
+    
   </main>
+
+
+    {% block content %}{% endblock %}
+
   <!-- home and about templates will inherit this layout page -->
   <!--  this page is parent so can remove stuff from home and about -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
