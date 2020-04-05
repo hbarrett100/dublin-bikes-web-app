@@ -83,6 +83,7 @@ body {
     font-size: 2.5rem;
   }
 
+
   .pac-card {
     margin: 10px 10px 0 0;
     border-radius: 2px 0 0 2px;
@@ -124,3 +125,25 @@ body {
   #pac-input:focus {
     border-color: #4d90fe;
   }
+
+
+  /* Style the close button (span) */
+.close {
+  cursor: pointer;
+  position: absolute;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  top: 20%;
+  right: 0%;
+  padding: 5px 10px;
+  transform: translate(0%, -50%);
+}
+
+.close:hover {color: rgb(65, 65, 65);}
+
+#nav-bar-email {
+  color:#cbd5db
+
+}
+
