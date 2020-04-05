@@ -6,6 +6,8 @@
 
 <div id="map"></div>
 
+<div id="prediction"></div>
+
 <script>
     // create global variables
     var map;
@@ -13,6 +15,9 @@
 
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
+
+    // Get model predictions from flask
+    modelData = JSON.parse('{{ modeldata|tojson }}')
 
     // function to create map called upon google connection to API below
     function initMap() {
@@ -65,6 +70,9 @@
     // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+                        // Set graph to predicted availability for selected stop
+                        setGraph(chart,locData[i]["id"]);
+
                         // send get request with id of station
                         // execute function once results have been returned from get request
                         $.getJSON("/query", {id: locData[i]["id"]}, function(stationInfo){
@@ -79,10 +87,13 @@
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
                         });
-                        
-                        
-
                     }
+
+                    readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
+                        var stationdata = JSON.parse(text);
+                        setGraph(stationdata[7]);
+                    });
+                    
                 })(marker, i));
               
                 markerArray.push(marker); 
@@ -101,7 +112,87 @@
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap"></script>
-    
 
+<canvas id="myChart"></canvas>
+
+<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> -->
+
+<script>
+    // Set graph data to particular data for selected stop
+    function setGraph(chart,stationid) {
+        station = modelData[stationid];
+        var availbikes = station['availbikes']
+            var availstands = station['availstands']
+
+            chart.data.datasets[0].data = availbikes;
+            chart.data.datasets[1].data = availstands;
+            chart.update();
+    }
+
+    // graph configuration
+    var hours = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"];
+    var config = {
+	    	type: 'line',
+	    	data: {
+	    		labels: hours,
+	    		datasets: [{
+	    			label: 'Available Stands',
+	    			backgroundColor: window.chartColors.red,
+	    			borderColor: window.chartColors.red,
+	    			data: new Array(24).fill(0),
+	    			fill: false,
+                },
+                {
+	    			label: 'Available Bikes',
+	    			backgroundColor: window.chartColors.blue,
+	    			borderColor: window.chartColors.blue,
+	    			data: new Array(24).fill(0),
+	    			fill: false,
+	    		}]
+	    	},
+	    	options: {
+	    		responsive: true,
+	    		title: {
+	    			display: true,
+	    			text: 'Average Bike & Stand Availability'
+	    		},
+	    		tooltips: {
+	    			mode: 'index',
+	    			intersect: false,
+	    		},
+	    		hover: {
+	    			mode: 'nearest',
+	    			intersect: true
+	    		},
+	    		scales: {
+	    			xAxes: [{
+	    				display: true,
+	    				scaleLabel: {
+	    					display: true,
+	    					labelString: 'Time'
+	    				}
+	    			}],
+	    			yAxes: [{
+	    				display: true,
+	    				scaleLabel: {
+	    					display: true,
+                            labelString: 'No. Available'
+                        },
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 20
+                        }
+	    			}]
+	    		}
+	    	}
+        };
+
+    // Create chart in myChart div
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, config);
+</script>
 <!-- end the block. The word content not required -->
 {% endblock content %}
