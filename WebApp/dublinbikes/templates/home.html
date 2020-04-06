@@ -293,6 +293,12 @@
         let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
+        //marker colour legend
+        let legendContent = "<p>" + '<img src="' + redMarker +'">' + "Less than 4 bikes</p>";
+        legendContent += "<p>" + '<img src="' + yellowMarker +'">' + "4-10 bikes</p>";
+        legendContent += "<p>" + '<img src="' + greenMarker +'">' + "More than 10 bikes</p>";
+        $("#marker-legend").html(legendContent);
+
         $.getJSON("/query", { id: "all" }, function (allStationInfo) {
 
             // console.log(locData)
