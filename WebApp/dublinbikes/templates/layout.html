@@ -15,9 +15,9 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <!-- if no title given use the default-->
   {% if title %}
-  <title>Flask Blog - {{ title }}</title>
+  <title>Dublin Bikes - {{ title }}</title>
   {% else %}
-  <title>Flask Blog</title>
+  <title>Dublin Bikes</title>
   {% endif %}
 </head>
 
@@ -25,7 +25,7 @@
   <header class="site-header">
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
       <div class="container">
-        <a class="navbar-brand mr-4" href="/">Flask Blog</a>
+        <a class="navbar-brand mr-4" href="/">Dublin Bikes</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
           aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -52,7 +52,7 @@
     </nav>
   </header>
   <main role="main" class="container">
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-md-8">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -63,10 +63,15 @@
         {% endwith %}
 
 
-        {% block content %}{% endblock %}
+        
       </div>
-    </div>
+    </div> -->
+    
   </main>
+
+
+    {% block content %}{% endblock %}
+
   <!-- home and about templates will inherit this layout page -->
   <!--  this page is parent so can remove stuff from home and about -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
