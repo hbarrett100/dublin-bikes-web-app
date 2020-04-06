@@ -236,3 +236,8 @@ body {
 .btn-outline-info:not(:disabled):not(.disabled).active:focus, .btn-outline-info:not(:disabled):not(.disabled):active:focus, .show>.btn-outline-info.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem rgba(77,131,171,.5);
 }
+
+
+.fav-star {
+  fill: yellow;
+}

@@ -4,36 +4,6 @@
 <!-- to inherit start a block -->
 {% block content %}
 
-
-<!--
-<div>
-    <input id="timepicker" type="text" class="timepicker" />
-</div>
-
-date buttons 
-<div class="btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-outline-info active">
-      <span class="date-text" id = "button1"></span>
-      <input type="radio" name="options" id="option1" autocomplete="off" checked>
-    </label>
-    <label class="btn btn-outline-info">
-        <span class="date-text" id="button2"></span>
-      <input type="radio" name="options" id="option2" autocomplete="off">
-    </label>
-    <label class="btn btn-outline-info">
-        <span class="date-text" id = "button3"></span>
-      <input type="radio" name="options" id="option3" autocomplete="off">
-    </label>
-    <label class="btn btn-outline-info">
-        <span class="date-text" id = "button4"></span>
-        <input type="radio" name="options" id="option4" autocomplete="off">
-      </label>
-      <label class="btn btn-outline-info">
-        <span class="date-text" id = "button5"></span>
-        <input type="radio" name="options" id="option5" autocomplete="off">
-  </div>
-
-
 <div id="prediction"></div> -->
 <div  id="map-container">
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
@@ -359,7 +329,7 @@ date buttons
                             content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
                             content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
                             content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-
+                            content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
                             // add content of get request to info window
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
