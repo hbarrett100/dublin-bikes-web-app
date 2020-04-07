@@ -46,6 +46,7 @@
             <canvas id="myChart"></canvas>
         </div>
     </div>
+    <!-- marker legend-->
     <div id="marker-legend">
         <p class="legend"><img src="/static/images/red-dot.png">Less than 4 bikes</p>
         <p class="legend"><img src="/static/images/yellow-dot.png">4-10 bikes</p>
@@ -347,7 +348,7 @@
                             content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
                             content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
                             content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-                            content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
+                            // content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
                             // add content of get request to info window
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
