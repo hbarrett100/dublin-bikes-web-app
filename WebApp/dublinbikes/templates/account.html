@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block content %}
+{% block static_pages %}
 <div class="content-section">
     <form method="POST" action="/updateemail">
         {{ email_form.hidden_tag() }}
@@ -93,4 +93,4 @@
 
 </div>
 
-{% endblock content %}
+{% endblock static_pages %}

@@ -1,6 +1,7 @@
 from dublinbikes import login_manager
 from flask_login import UserMixin
 import mysql.connector
+import json
 
 def get_password(email):
     try:
@@ -184,9 +185,9 @@ class User(UserMixin):
             u = result.fetchall()[0]
             self.email = u[0]
             self.password = u[1]
-            self.stations = u[2]
+            self.stations = json.loads(u[2])
             self.emailvalidated = u[3]
-
+            print(self.stations)
 
         mycursor.close()
         mydb.close()

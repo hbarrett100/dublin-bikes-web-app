@@ -1,9 +1,8 @@
 body {
     background: #fafafa;
     color: #333333;
-    margin: 0;
-    margin-top: 3.5rem;
-    overflow: hidden;
+    margin-top: 6rem;
+    
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -151,19 +150,18 @@ body {
 
 }
 
-/* .fullscreen {
-  height: 100%;
-  width: 100%;
-  
-} */
 
 #map-container {
-  width: 100vw;
+  width: 100vw; 
   height: calc(100vh - 56px);
   margin: 0;
   overflow: hidden;
   position: relative;
 
+}
+
+.map-shrink {
+  height: calc(100vh - 106px) !important; 
 }
 
 #info-div {
@@ -265,4 +263,16 @@ body {
   z-index: 5;
   margin-left: 60px;
   margin-bottom: 20px;
+}
+
+
+/* .content-section {
+  margin-top: 20px;
+} */
+
+
+.favourite-star {
+  vertical-align: sub;
+  height: 30px;
+  filter: invert(73%) sepia(90%) saturate(986%) hue-rotate(359deg) brightness(105%) contrast(105%);
 }

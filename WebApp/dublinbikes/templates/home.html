@@ -2,16 +2,49 @@
 {% extends "layout.html" %}
 
 <!-- to inherit start a block -->
-{% block content %}
+{% block map_page %}
+<style>
+    body {
+        overflow: hidden;
+        margin-top: 3.5rem;
+    }
+</style>
+
+<div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
+        <div class="container">{{ message }} <span class="close">x</span></div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+
+
+
 
 <div id="prediction"></div>
-<div  id="map-container">
+
+
+<div id="map-container">
+
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-    
-    <div id="map"></div>    
+
+    <div id="map"></div>
     <!-- info div -->
     <div id="info-div">
         <h2 id="station-title"></h2>
+        <p>Add to favourites: <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+        </svg></p>
+
+
+
+'
+
+
         <!-- timepicker-->
         <div id="timepicker-div">
             <h6>Choose a time and date:</h6>
@@ -21,23 +54,23 @@
         <div class="datepicker-div">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-outline-info active">
-                <span class="date-text" id = "button1"></span>
-                <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                    <span class="date-text" id="button1"></span>
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
                 </label>
                 <label class="btn btn-outline-info">
                     <span class="date-text" id="button2"></span>
-                <input type="radio" name="options" id="option2" autocomplete="off">
+                    <input type="radio" name="options" id="option2" autocomplete="off">
                 </label>
                 <label class="btn btn-outline-info">
-                    <span class="date-text" id = "button3"></span>
-                <input type="radio" name="options" id="option3" autocomplete="off">
+                    <span class="date-text" id="button3"></span>
+                    <input type="radio" name="options" id="option3" autocomplete="off">
                 </label>
                 <label class="btn btn-outline-info">
-                    <span class="date-text" id = "button4"></span>
+                    <span class="date-text" id="button4"></span>
                     <input type="radio" name="options" id="option4" autocomplete="off">
                 </label>
                 <label class="btn btn-outline-info">
-                    <span class="date-text" id = "button5"></span>
+                    <span class="date-text" id="button5"></span>
                     <input type="radio" name="options" id="option5" autocomplete="off">
             </div>
         </div>
@@ -46,19 +79,101 @@
         </div>
     </div>
     <div id="marker-legend">
-        <h1>HI</h1>
     </div>
 </div>
+<script>
+
+    if ($("#alert-box").length) {
+        $("#map-container").addClass("map-shrink");
+    }
+
+    $(".close").click(function () {
+        $(this).parent().parent().hide();
+        $("#map-container").removeClass("map-shrink");
+    });
+</script>
+
 <script>
     // create global variables
     var map;
     var infowindow;
-
+    var markerArray;
+    var markerDict;
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
     // Get model predictions from flask
     modelData = JSON.parse('{{ modeldata|tojson }}')
+
+    function getStationInfo(marker, i)
+        {
+            $("#info-div").show();
+
+            //add title of station to top of info div
+            $("#station-title").html(locData[i]["name"]);
+            // Set graph to predicted availability for selected stop
+
+
+            setGraph(chart, locData[i]["id"]);
+
+
+            // send get request with id of station
+            // execute function once results have been returned from get request
+            $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
+                let content = "<h5>" + locData[i]["name"] + "</h5>";
+                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
+                content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+                content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+
+                // add content of get request to info window
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            });
+
+
+            // get current time using Date object
+            let d = new Date();
+            let hour = d.getHours();
+            let minutes = d.getMinutes();
+            // round time nearest half hour
+            if (minutes < 15) {
+                minutes = 0;
+            } else if (minutes >= 15 && minutes < 45) {
+                minutes = 30;
+            } else if (minutes > 45) {
+                minutes = 0;
+                hour = (hour + 1) % 24;
+            }
+            let currentTime = hour + ":" + minutes;
+            // create jquery timepicker
+            $('#timepicker').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 30,
+                scrollbar: true,
+                defaultTime: currentTime,
+                dynamic: false
+            });
+            // date buttons
+            const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // loop through all elements in the class date-text 
+            $('.date-text').each(function (index, obj) {
+                // create Date object
+                let date = new Date();
+                date.setDate(date.getDate() + index);
+                if (date.getDate() < 10) {
+                    newdate = 0 + "" + date.getDate();
+                }
+                obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
+
+            });
+        }
+    
+
+
 
     // function to create map called upon google connection to API below
     function initMap() {
@@ -76,8 +191,8 @@
             disableDefaultUI: true,
             zoomControl: true,
             zoomControlOptions: {
-                    position: google.maps.ControlPosition.LEFT_BOTTOM
-                },
+                position: google.maps.ControlPosition.LEFT_BOTTOM
+            },
             styles: [
                 {
                     "featureType": "all",
@@ -285,7 +400,8 @@
             });
             map.fitBounds(bounds);
         });
-        var markerArray = [];
+        markerArray = [];
+        markerDict = {};
         var marker, i, colour;
 
         let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
@@ -294,9 +410,9 @@
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
         //marker colour legend
-        let legendContent = "<p>" + '<img src="' + redMarker +'">' + "Less than 4 bikes</p>";
-        legendContent += "<p>" + '<img src="' + yellowMarker +'">' + "4-10 bikes</p>";
-        legendContent += "<p>" + '<img src="' + greenMarker +'">' + "More than 10 bikes</p>";
+        let legendContent = "<p>" + '<img src="' + redMarker + '">' + "Less than 4 bikes</p>";
+        legendContent += "<p>" + '<img src="' + yellowMarker + '">' + "4-10 bikes</p>";
+        legendContent += "<p>" + '<img src="' + greenMarker + '">' + "More than 10 bikes</p>";
         $("#marker-legend").html(legendContent);
 
         $.getJSON("/query", { id: "all" }, function (allStationInfo) {
@@ -324,88 +440,14 @@
 
                 // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
-
-
-
                     return function () {
-                        $("#info-div").show();
-                        
-                        //add title of station to top of info div
-                        $("#station-title").html(locData[i]["name"]);
-
-                        // Set graph to predicted availability for selected stop
-                        
-
-                        setGraph(chart,locData[i]["id"]);
-
-
-                        // send get request with id of station
-                        // execute function once results have been returned from get request
-                        $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
-                            let content = "<h5>" + locData[i]["name"] + "</h5>";
-                            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-                            content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
-                            // add content of get request to info window
-                            infowindow.setContent(content);
-                            infowindow.open(map, marker);
-                        });
-                            
-
-                            // get current time using Date object
-                            let d = new Date();
-                            let hour = d.getHours();
-                            let minutes = d.getMinutes();
-                            // round time nearest half hour
-                            if (minutes < 15) {
-                                minutes = 0;
-                            } else if (minutes >= 15 && minutes < 45) {
-                                minutes = 30;
-                            } else if (minutes > 45) {
-                                minutes = 0;
-                                hour = (hour + 1) % 24;
-                            }
-                            let currentTime = hour + ":" + minutes;
-                            // create jquery timepicker
-                            $('#timepicker').timepicker({
-                                timeFormat: 'HH:mm',
-                                interval: 30,
-                                scrollbar: true,
-                                defaultTime: currentTime,
-                                dynamic: false
-                            });
-                            // date buttons
-                            const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
-                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                            // loop through all elements in the class date-text 
-                            $('.date-text').each(function(index, obj){
-                                // create Date object
-                                let date = new Date();
-                                date.setDate(date.getDate() + index);
-                                if (date.getDate() < 10) {
-                                    newdate = 0 + "" + date.getDate(); 
-                                }
-                                obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
-
-                            });
-                    } 
-
-
-                    
-
-                    readTextFile("../static/historical-data/station_avg_availability_1.json", function(text) {
-                        var stationdata = JSON.parse(text);
-                        setGraph(stationdata[7]);
-                    });
-
-                    
+                        getStationInfo(marker, i)
+                    }
                 })(marker, i));
 
                 markerArray.push(marker);
+                markerDict[locData[i]["id"]] = marker;
+
             }
 
             // create marker clusters using array of markers
@@ -414,7 +456,8 @@
     }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap&libraries=places"></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap&libraries=places"></script>
 
 
 
@@ -427,77 +470,77 @@
 
 <script>
     // Set graph data to particular data for selected stop
-    function setGraph(chart,stationid) {
+    function setGraph(chart, stationid) {
         station = modelData[stationid];
         var availbikes = station['availbikes']
-            var availstands = station['availstands']
+        var availstands = station['availstands']
 
-            chart.data.datasets[0].data = availbikes;
-            chart.data.datasets[1].data = availstands;
-            chart.update();
+        chart.data.datasets[0].data = availbikes;
+        chart.data.datasets[1].data = availstands;
+        chart.update();
     }
 
     // graph configuration
-    var hours = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"];
+    var hours = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
     var config = {
-	    	type: 'line',
-	    	data: {
-	    		labels: hours,
-	    		datasets: [{
-	    			label: 'Available Stands',
-	    			backgroundColor: window.chartColors.red,
-	    			borderColor: window.chartColors.red,
-	    			data: new Array(24).fill(0),
-	    			fill: false,
-                },
-                {
-	    			label: 'Available Bikes',
-	    			backgroundColor: window.chartColors.blue,
-	    			borderColor: window.chartColors.blue,
-	    			data: new Array(24).fill(0),
-	    			fill: false,
-	    		}]
-	    	},
-	    	options: {
-	    		responsive: true,
-	    		title: {
-	    			display: true,
-	    			text: 'Average Bike & Stand Availability'
-	    		},
-	    		tooltips: {
-	    			mode: 'index',
-	    			intersect: false,
-	    		},
-	    		hover: {
-	    			mode: 'nearest',
-	    			intersect: true
-	    		},
-	    		scales: {
-	    			xAxes: [{
-	    				display: true,
-	    				scaleLabel: {
-	    					display: true,
-	    					labelString: 'Time'
-	    				}
-	    			}],
-	    			yAxes: [{
-	    				display: true,
-	    				scaleLabel: {
-	    					display: true,
-                            labelString: 'No. Available'
-                        },
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 20
-                        }
-	    			}]
-	    		}
-	    	}
-        };
+        type: 'line',
+        data: {
+            labels: hours,
+            datasets: [{
+                label: 'Available Stands',
+                backgroundColor: window.chartColors.red,
+                borderColor: window.chartColors.red,
+                data: new Array(24).fill(0),
+                fill: false,
+            },
+            {
+                label: 'Available Bikes',
+                backgroundColor: window.chartColors.blue,
+                borderColor: window.chartColors.blue,
+                data: new Array(24).fill(0),
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Average Bike & Stand Availability'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'No. Available'
+                    },
+                    ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 20
+                    }
+                }]
+            }
+        }
+    };
 
     // Create chart in myChart div
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, config);
 </script>
 <!-- end the block. The word content not required -->
-{% endblock content %}
+{% endblock map_page %}
