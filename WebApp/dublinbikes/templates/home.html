@@ -6,6 +6,7 @@
 
 <div id="prediction"></div>
 <div  id="map-container">
+    <!-- map search box -->
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     
     <div id="map"></div>    
@@ -45,8 +46,12 @@
             <canvas id="myChart"></canvas>
         </div>
     </div>
+    <!-- marker legend-->
     <div id="marker-legend">
-        <h1>HI</h1>
+        <p class="legend"><img src="/static/images/red-dot.png">Less than 4 bikes</p>
+        <p class="legend"><img src="/static/images/yellow-dot.png">4-10 bikes</p>
+        <p class="legend"><img src="/static/images/green-dot.png">More than 10 bikes</p>
+        <p class="legend">Click a marker for more information</p></op>
     </div>
 </div>
 <script>
@@ -293,11 +298,6 @@
         let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
-        //marker colour legend
-        let legendContent = "<p>" + '<img src="' + redMarker +'">' + "Less than 4 bikes</p>";
-        legendContent += "<p>" + '<img src="' + yellowMarker +'">' + "4-10 bikes</p>";
-        legendContent += "<p>" + '<img src="' + greenMarker +'">' + "More than 10 bikes</p>";
-        $("#marker-legend").html(legendContent);
 
         $.getJSON("/query", { id: "all" }, function (allStationInfo) {
 
@@ -348,7 +348,7 @@
                             content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
                             content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
                             content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-                            content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
+                            // content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
                             // add content of get request to info window
                             infowindow.setContent(content);
                             infowindow.open(map, marker);
