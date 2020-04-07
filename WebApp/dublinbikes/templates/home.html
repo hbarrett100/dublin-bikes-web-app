@@ -388,6 +388,8 @@
                                 date.setDate(date.getDate() + index);
                                 if (date.getDate() < 10) {
                                     newdate = 0 + "" + date.getDate(); 
+                                } else {
+                                    newdate = date.getDate();
                                 }
                                 obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
 
