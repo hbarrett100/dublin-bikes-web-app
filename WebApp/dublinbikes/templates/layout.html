@@ -44,17 +44,7 @@
                 aria-haspopup="true" aria-expanded="false">
                 Favourites
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                {% with stations = current_user.stations %}
-                {% if stations %}
-                {% for station_name, station_id in stations %}
-                <a class="dropdown-item" id="dropdown-station-{{ station_id }}">{{ station_name }}</a>
-                {% endfor %}
-                {% else %}
-                <a class="dropdown-item disabled" id="dropdown-station-none">No favourites selected</a>
-                {% endif %}
-                {% endwith %}
-
+              <div class="dropdown-menu" id="favourites-menu" aria-labelledby="navbarDropdown">
               </div>
             </div>
             <a class="nav-item nav-link" href="/logout">Log Out</a>

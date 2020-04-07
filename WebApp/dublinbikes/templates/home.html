@@ -37,12 +37,12 @@
     <div id="info-div">
         <h2 id="station-title"></h2>
         <p>Add to favourites: <svg width="100" height="100">
-            <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-        </svg></p>
+                <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+            </svg></p>
 
 
 
-'
+        '
 
 
         <!-- timepicker-->
@@ -92,7 +92,42 @@
         $("#map-container").removeClass("map-shrink");
     });
 </script>
+<script>
+    var favouriteStationsArr = []
+    var userStationIds = JSON.parse('{{ stations }}');
 
+    function addStationToMenu(name, id) {
+        $favStation = $('<a/>', { "class": "dropdown-item" })
+            .text(name)
+            .click(function(){ getStationInfo(markerDict[id]["marker"], markerDict[id]["idx"])});
+        $("#favourites-menu").append($favStation);
+    }
+    function fillFavouritesMenu() {
+        $("#favourites-menu").html("");
+
+        console.log(markerDict);
+        if (userStationIds) {
+            userStationIds.forEach(stationId => {
+                console.log(stationId);
+                console.log(markerDict[stationId]);
+                favouriteStationsArr.push([markerDict[stationId]["name"], stationId]);
+            });
+            favouriteStationsArr.sort();
+            favouriteStationsArr.forEach(station => {
+                addStationToMenu(station[0], station[1])
+            });
+
+
+            console.log(favouriteStationsArr);
+        }
+        // console.log(stationNames);
+    }
+
+
+                    // <a class="dropdown-item" id="dropdown-station-{{ station_id }}">{{ station_name }}</a>
+
+                    //     <a class="dropdown-item disabled" id="dropdown-station-none">No favourites selected</a>
+</script>
 <script>
     // create global variables
     var map;
@@ -105,73 +140,72 @@
     // Get model predictions from flask
     modelData = JSON.parse('{{ modeldata|tojson }}')
 
-    function getStationInfo(marker, i)
-        {
-            $("#info-div").show();
+    function getStationInfo(marker, i) {
+        $("#info-div").show();
 
-            //add title of station to top of info div
-            $("#station-title").html(locData[i]["name"]);
-            // Set graph to predicted availability for selected stop
-
-
-            setGraph(chart, locData[i]["id"]);
+        //add title of station to top of info div
+        $("#station-title").html(locData[i]["name"]);
+        // Set graph to predicted availability for selected stop
 
 
-            // send get request with id of station
-            // execute function once results have been returned from get request
-            $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
-                let content = "<h5>" + locData[i]["name"] + "</h5>";
-                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
-
-                // add content of get request to info window
-                infowindow.setContent(content);
-                infowindow.open(map, marker);
-            });
+        setGraph(chart, locData[i]["id"]);
 
 
-            // get current time using Date object
-            let d = new Date();
-            let hour = d.getHours();
-            let minutes = d.getMinutes();
-            // round time nearest half hour
-            if (minutes < 15) {
-                minutes = 0;
-            } else if (minutes >= 15 && minutes < 45) {
-                minutes = 30;
-            } else if (minutes > 45) {
-                minutes = 0;
-                hour = (hour + 1) % 24;
-            }
-            let currentTime = hour + ":" + minutes;
-            // create jquery timepicker
-            $('#timepicker').timepicker({
-                timeFormat: 'HH:mm',
-                interval: 30,
-                scrollbar: true,
-                defaultTime: currentTime,
-                dynamic: false
-            });
-            // date buttons
-            const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        // send get request with id of station
+        // execute function once results have been returned from get request
+        $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
+            let content = "<h5>" + locData[i]["name"] + "</h5>";
+            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
+            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
 
-            // loop through all elements in the class date-text 
-            $('.date-text').each(function (index, obj) {
-                // create Date object
-                let date = new Date();
-                date.setDate(date.getDate() + index);
-                if (date.getDate() < 10) {
-                    newdate = 0 + "" + date.getDate();
-                }
-                obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
+            // add content of get request to info window
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+        });
 
-            });
+
+        // get current time using Date object
+        let d = new Date();
+        let hour = d.getHours();
+        let minutes = d.getMinutes();
+        // round time nearest half hour
+        if (minutes < 15) {
+            minutes = 0;
+        } else if (minutes >= 15 && minutes < 45) {
+            minutes = 30;
+        } else if (minutes > 45) {
+            minutes = 0;
+            hour = (hour + 1) % 24;
         }
-    
+        let currentTime = hour + ":" + minutes;
+        // create jquery timepicker
+        $('#timepicker').timepicker({
+            timeFormat: 'HH:mm',
+            interval: 30,
+            scrollbar: true,
+            defaultTime: currentTime,
+            dynamic: false
+        });
+        // date buttons
+        const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        // loop through all elements in the class date-text 
+        $('.date-text').each(function (index, obj) {
+            // create Date object
+            let date = new Date();
+            date.setDate(date.getDate() + index);
+            if (date.getDate() < 10) {
+                newdate = 0 + "" + date.getDate();
+            }
+            obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
+
+        });
+    }
+
 
 
 
@@ -446,13 +480,15 @@
                 })(marker, i));
 
                 markerArray.push(marker);
-                markerDict[locData[i]["id"]] = marker;
+                markerDict[locData[i]["id"]] = { marker: marker, idx: i, name: locData[i]["name"] };
 
             }
 
             // create marker clusters using array of markers
             var markerCluster = new MarkerClusterer(map, markerArray, { maxZoom: 14, imagePath: '/static/images/cluster_images/m' });
+            fillFavouritesMenu();
         });
+
     }
 </script>
 <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
@@ -542,5 +578,9 @@
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, config);
 </script>
+
+
+
+
 <!-- end the block. The word content not required -->
 {% endblock map_page %}

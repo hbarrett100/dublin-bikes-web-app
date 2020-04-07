@@ -13,7 +13,11 @@ import json
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions())
+    if current_user.is_authenticated:
+        stations = current_user.stations
+    else:
+        stations = "[]"
+    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
 
 @app.route('/about')
