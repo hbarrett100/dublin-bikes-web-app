@@ -172,13 +172,15 @@ def get_weekly_data(id):
         print("SOMETHING WENT WRONG:", err)
 
 # create empty array
-    data = []
+    data = {'availbikes': [], 'availstands': []}
 
 # iterate through results of mysql stored procedure and append to array
     for result in mycursor.stored_results():
         for row in result.fetchall():
-            data.append({'availbikes': row[0],'availstands': row[1]})
+            data['availbikes'].append(row[0])
+            data['availstands'].append(row[1])
 
+    print(data)
     mycursor.close()
     mydb.close()
 
@@ -196,7 +198,7 @@ def get_hourly_data_by_day(day, id):
 
         mycursor = mydb.cursor()
         # called mysql stored procedure giving id as an argument
-        mycursor.callproc('get_avg_hourly_availbike_by_day_and_id', [id, ])
+        mycursor.callproc('get_avg_hourly_availbike_by_day_and_id', [day, id])
         result = mycursor.stored_results()
 
     except mysql.connector.Error as err:
@@ -204,14 +206,14 @@ def get_hourly_data_by_day(day, id):
         print("SOMETHING WENT WRONG:", err)
 
 # create empty array
-    data = []
+    data = {'availbikes': [], 'availstands': []}
 
 # iterate through results of mysql stored procedure and append to array
     for result in mycursor.stored_results():
         for row in result.fetchall():
-            data.append({'availbikes': row[0],'availstands': row[1]})
+            data['availbikes'].append(row[0])
+            data['availstands'].append(row[1])
 
     mycursor.close()
     mydb.close()
-
     return data

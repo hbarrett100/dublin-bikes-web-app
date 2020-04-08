@@ -293,3 +293,9 @@ body {
   right: 2%;
   font-size: 2rem;
 }
+
+.chart-container {
+  position: relative;
+  width: 390px;
+  height: 350px;
+}

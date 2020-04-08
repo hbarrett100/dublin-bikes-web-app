@@ -69,47 +69,46 @@
                     <input type="radio" name="options" id="option5" autocomplete="off">
             </div>
         </div>
-
+        <!-- buttons for weekday-->
         <h3>Average historical Data</h3>
         <h6>Choose a day</h6>
         <div class="daypicker-div">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="day-btn btn btn-outline-info active">
+                <label class="day-btn btn btn-outline-info" id="day-btn-1">
                     <span class="day-text">Mon</span>
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                    <input type="radio" name="options" id="option1" autocomplete="off">
                 </label>
-                <label class="day-btn  btn btn-outline-info">
+                <label class="day-btn  btn btn-outline-info" id="day-btn-2">
                     <span class="day-text">Tue</span>
                     <input type="radio" name="options" id="option2" autocomplete="off">
                 </label>
-                <label class="day-btn btn btn-outline-info">
+                <label class="day-btn btn btn-outline-info" id="day-btn-3">
                     <span class="day-text">Wed</span>
                     <input type="radio" name="options" id="option3" autocomplete="off">
                 </label>
-                <label class="day-btn btn btn-outline-info">
+                <label class="day-btn btn btn-outline-info" id="day-btn-4">
                     <span class="day-text">Thurs</span>
                     <input type="radio" name="options" id="option4" autocomplete="off">
                 </label>
-                <label class="day-btn btn btn-outline-info">
+                <label class="day-btn btn btn-outline-info" id="day-btn-5">
                     <span class="day-text">Fri</span>
                     <input type="radio" name="options" id="option5" autocomplete="off">
                 </label>
-                <label class="day-btn btn btn-outline-info">
+                <label class="day-btn btn btn-outline-info" id="day-btn-6">
                     <span class="day-text">Sat</span>
                     <input type="radio" name="options" id="option6" autocomplete="off">
                 </label>
-                <label class="day-btn btn btn-outline-info">
+                <label class="day-btn btn btn-outline-info" id="day-btn-0">
                     <span class="day-text">Sun</span>
                     <input type="radio" name="options" id="option7" autocomplete="off">
                 </label>
             </div>
         </div>
 
-        <div>
+        <div class="chart-container">
             <canvas class="chart" id="daily-chart"></canvas>
         </div>
-
-        <div>
+        <div class="chart-container">
             <canvas class="chart" id="weekly-chart"></canvas>
         </div>
     </div>
@@ -215,8 +214,6 @@
 
         //add title of station to top of info div
         $("#station-title").html(locData[i]["name"]);
-        // Set graph to predicted availability for selected stop
-        setGraph(chart, locData[i]["id"]);
 
         var favCheck = isFavourited(locData[i]["id"])
         let buttonText = favCheck ? "Remove from favourites" : "Add to favourites"
@@ -274,13 +271,28 @@
             dynamic: false
         });
         // date buttons
-        const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+        const weekdays = ['Sun','Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let date = new Date();
 
+
+        //daily graph
+        let today = date.getDay()
+        //create current day for mySql
+        let mySqlToday = (today+1) % 7;
+
+
+        $(".day-btn").removeClass("active");
+        $("#day-btn-" + today).addClass("active");
+
+        setGraph(dayChart, locData[i]["id"], mySqlToday); //hourly data at specific day
+        setGraph(weeklyChart, locData[i]["id"], "all"); //weekly chart
+        addOnClicksToDayButtons(locData[i]["id"])
+
+    
         // loop through all elements in the class date-text 
         $('.date-text').each(function (index, obj) {
             // create Date object
-            let date = new Date();
             date.setDate(date.getDate() + index);
             if (date.getDate() < 10) {
                 newdate = 0 + "" + date.getDate();
@@ -298,7 +310,8 @@
             });
         });
 
-        addOnClicksToDayButtons(locData[i]["id"])
+     
+  
     }
 
 
@@ -623,7 +636,7 @@
             $(obj).off("click");
             $(obj).click(function () {
                 console.log(id, index);
-                // setGraph(chart,locData[i]["id"], index);
+                setGraph(dayChart, id, index);
             });
         });
 
@@ -639,14 +652,15 @@
 
 
     // Set graph data to particular data for selected stop
-    function setGraph(chart, stationid) {
-        station = modelData[stationid];
-        var availbikes = station['availbikes']
-        var availstands = station['availstands']
-
-        chart.data.datasets[0].data = availbikes;
-        chart.data.datasets[1].data = availstands;
-        chart.update();
+    function setGraph(chart, stationid, day) {
+        $.getJSON("/averages", { id: stationid, day: day }, function (average_info) {
+            console.log(average_info)
+            var availbikes = average_info['availbikes']
+            var availstands = average_info['availstands']
+            chart.data.datasets[0].data = availbikes;
+            chart.data.datasets[1].data = availstands;
+            chart.update();
+        });
     }
 
     // graph configuration
@@ -672,9 +686,10 @@
         },
         options: {
             responsive: true,
+            aspectRatio: 1.15,
             title: {
                 display: true,
-                text: 'Average Bike & Stand Availability'
+                text: 'Hourly data at specific day'
             },
             tooltips: {
                 mode: 'index',
@@ -733,9 +748,10 @@
         },
         options: {
             responsive: true,
+            aspectRatio: 1.15,
             title: {
                 display: true,
-                text: 'Average Bike & Stand Availability'
+                text: 'Weekly data'
             },
             tooltips: {
                 mode: 'index',
