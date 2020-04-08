@@ -14,6 +14,7 @@ def home():
         stations = current_user.stations
     else:
         stations = "[]"
+        
     return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
 
