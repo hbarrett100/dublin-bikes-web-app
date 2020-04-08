@@ -95,13 +95,13 @@
     });
 </script>
 <script>
-    
-    var userStationIds = JSON.parse('{{ stations }}');
+
+    var userStationIds = JSON.parse('{{ stations|tojson }}');
 
     function addStationToMenu(name, id) {
         let $favStation = $('<a/>', { "class": "dropdown-item", "id": "station-menu-" + id })
             .text(name)
-            .click(() => { getStationInfo(markerDict[id]["marker"], markerDict[id]["idx"])});
+            .click(() => { getStationInfo(markerDict[id]["marker"], markerDict[id]["idx"]) });
         $("#favourites-menu").append($favStation);
     }
 
@@ -109,7 +109,8 @@
     function fillFavouritesMenu(userStationIds) {
         $("#favourites-menu").html("");
         let favouriteStationsArr = [];
-        if (userStationIds) {
+
+        if (userStationIds.length > 0) {
             userStationIds.forEach(stationId => {
                 console.log(stationId);
                 console.log(markerDict[stationId]);
@@ -127,15 +128,31 @@
         }
     }
 
-    function isFavourited(id){
-        return userStationIds.includes(id);
+    function isFavourited(id) {
+        return userStationIds.includes(id.toString());
     }
 
-    function addOrRemoveStationToFavourites(id){
+    function addOrRemoveStationToFavourites(id) {
+
+        $("#add-to-favs-btn").off("click");
+
+        let workingText = isFavourited(id) ? "Removing..." : "Adding..."
+        $("#add-to-favs-btn").val(workingText)
+            .addClass("disabled")
+            .prop("disabled", true);
+
         let action = isFavourited(id) ? "remove" : "add";
-        $.post("/addstation", {action: action, id: id} , function (data) {
+        $.post("/addstation", { action: action, id: id }, function (data) {
             userStationIds = JSON.parse(data);
             fillFavouritesMenu(userStationIds);
+
+            if (currentMarkerId == id) {
+                let buttonText = isFavourited(id) ? "Remove from favourites" : "Add to favourites";
+                $("#add-to-favs-btn").val(buttonText)
+                    .removeClass("disabled")
+                    .prop("disabled", false)
+                    .click(() => addOrRemoveStationToFavourites(id));
+            }
         });
     }
 
@@ -147,6 +164,7 @@
     var infowindow;
     var markerArray;
     var markerDict;
+    var currentMarkerId;
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
@@ -154,6 +172,8 @@
     modelData = JSON.parse('{{ modeldata|tojson }}')
 
     function getStationInfo(marker, i) {
+        currentMarkerId = locData[i]["id"];
+
         $("#info-div").show();
 
         //add title of station to top of info div
@@ -161,16 +181,15 @@
         // Set graph to predicted availability for selected stop
         setGraph(chart, locData[i]["id"]);
 
+        var favCheck = isFavourited(locData[i]["id"])
+        let buttonText = favCheck ? "Remove from favourites" : "Add to favourites"
+        $("#add-to-favs-btn").off("click")
+            .removeClass("disabled")
+            .prop("disabled", false)
+            .val(buttonText)
+            .click(() => addOrRemoveStationToFavourites(locData[i]["id"]));
 
-        
-        $("#add-to-favs-btn").off("click");
-        if(isFavourited(locData[i]["id"])){
-            $("#add-to-favs-btn").val("Remove from Favourites")
-                .click(() => addOrRemoveStationToFavourites(locData[i]["id"]));;
-        } else {
-            $("#add-to-favs-btn").val("Add to Favourites")
-                .click(() => addOrRemoveStationToFavourites(locData[i]["id"]));
-        }
+
 
 
         // send get request with id of station

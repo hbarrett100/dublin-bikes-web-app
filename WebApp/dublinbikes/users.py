@@ -207,7 +207,7 @@ class User(UserMixin):
             )
 
             mycursor = mydb.cursor()
-
+            print("feattuer:", feature)
             # called mysql stored procedure giving email as an argument
             if feature == "email":
                 mycursor.callproc('update_email', [self.email, data])
@@ -216,11 +216,12 @@ class User(UserMixin):
                 mycursor.callproc('update_password', [self.email, data])
             elif feature == "add_station":
                 self.stations.append(data)
-                mycursor.callproc('update_stations', [self.email, self.stations])
+                mycursor.callproc('update_stations', [self.email, json.dumps(self.stations)])
             elif feature == "remove_station":
                 if data in self.stations:
                     self.stations.remove(data)
-                mycursor.callproc('update_stations', [self.email, self.stations])
+                mycursor.callproc('update_stations', [
+                                  self.email, json.dumps(self.stations)])
                 
             mydb.commit()
         except mysql.connector.Error as err:

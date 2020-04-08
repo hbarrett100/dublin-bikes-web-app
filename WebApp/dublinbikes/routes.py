@@ -5,9 +5,6 @@ from dublinbikes.getdata import * # import get_locations, get_current_station_da
 from dublinbikes.users import get_password, add_user, add_favourite_station, get_favourite_stations, check_email, load_user
 from dublinbikes.forms import RegistrationForm, LoginForm, UpdateEmail, UpdatePassword
 from flask_login import login_user, current_user, logout_user, login_required
-
-
-
 import json
 
 @app.route('/')
@@ -147,9 +144,14 @@ def addstation():
     if not current_user.is_authenticated:
         flash(f"You must be logged in to add stations to favourites", "danger")
         return redirect(url_for("home"))
-    action = request.form['action']
+    action = request.form['action'] + "_station"
     station_id = request.form['id']
-
+    print(station_id, action)
+    print(current_user.stations)
     current_user.update_feature(station_id, action)
-
-    return str(current_user.stations)
+    email = current_user.email
+    logout_user()
+    user = load_user(email)
+    login_user(user)
+    print(type(current_user.stations))
+    return json.dumps(current_user.stations)
