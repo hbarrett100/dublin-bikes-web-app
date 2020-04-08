@@ -13,7 +13,11 @@ import json
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions())
+    if current_user.is_authenticated:
+        stations = current_user.stations
+    else:
+        stations = "[]"
+    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
 
 @app.route('/about')
@@ -137,3 +141,15 @@ def query():
     return station_info
 
 
+@app.route("/addstation", methods=["GET", "POST"])
+def addstation():
+    # Check is user is logged in, if so they can't access addstation route
+    if not current_user.is_authenticated:
+        flash(f"You must be logged in to add stations to favourites", "danger")
+        return redirect(url_for("home"))
+    action = request.form['action']
+    station_id = request.form['id']
+
+    current_user.update_feature(station_id, action)
+
+    return str(current_user.stations)

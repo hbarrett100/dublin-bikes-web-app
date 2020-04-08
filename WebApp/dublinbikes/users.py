@@ -1,6 +1,7 @@
 from dublinbikes import login_manager
 from flask_login import UserMixin
 import mysql.connector
+import json
 
 def get_password(email):
     try:
@@ -184,9 +185,9 @@ class User(UserMixin):
             u = result.fetchall()[0]
             self.email = u[0]
             self.password = u[1]
-            self.stations = u[2]
+            self.stations = json.loads(u[2])
             self.emailvalidated = u[3]
-
+            print(self.stations)
 
         mycursor.close()
         mydb.close()
@@ -211,9 +212,15 @@ class User(UserMixin):
             if feature == "email":
                 mycursor.callproc('update_email', [self.email, data])
             elif feature == "password":
+                self.password = data
                 mycursor.callproc('update_password', [self.email, data])
-            elif feature == "stations":
-                mycursor.callproc('update_stations', [self.email, data])
+            elif feature == "add_station":
+                self.stations.append(data)
+                mycursor.callproc('update_stations', [self.email, self.stations])
+            elif feature == "remove_station":
+                if data in self.stations:
+                    self.stations.remove(data)
+                mycursor.callproc('update_stations', [self.email, self.stations])
                 
             mydb.commit()
         except mysql.connector.Error as err:
