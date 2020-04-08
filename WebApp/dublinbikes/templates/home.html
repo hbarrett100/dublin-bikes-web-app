@@ -27,7 +27,7 @@
 
 <div id="prediction"></div>
 
-<div  id="map-container">
+<div id="map-container">
     <!-- map search box -->
 
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
@@ -37,7 +37,7 @@
     <div id="info-div">
         <button type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
-          </button>
+        </button>
         <h2 id="station-title"></h2>
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
         <!-- timepicker-->
@@ -69,6 +69,31 @@
                     <input type="radio" name="options" id="option5" autocomplete="off">
             </div>
         </div>
+
+        <div class="daypicker-div">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-outline-info active">
+                    <span class="date-text" id="button1"></span>
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                </label>
+                <label class="btn btn-outline-info">
+                    <span class="date-text" id="button2"></span>
+                    <input type="radio" name="options" id="option2" autocomplete="off">
+                </label>
+                <label class="btn btn-outline-info">
+                    <span class="date-text" id="button3"></span>
+                    <input type="radio" name="options" id="option3" autocomplete="off">
+                </label>
+                <label class=" btn btn-outline-info">
+                    <span class="date-text" id="button4"></span>
+                    <input type="radio" name="options" id="option4" autocomplete="off">
+                </label>
+                <label class="btn btn-outline-info">
+                    <span class="date-text" id="button5"></span>
+                    <input type="radio" name="options" id="option5" autocomplete="off">
+            </div>
+        </div>
+
         <div>
             <canvas id="myChart"></canvas>
         </div>
@@ -79,7 +104,8 @@
         <p class="legend"><img src="/static/images/bike-red.png">Less than 4 bikes</p>
         <p class="legend"><img src="/static/images/bike-yellow.png">4-10 bikes</p>
         <p class="legend"><img src="/static/images/bike-green.png">More than 10 bikes</p>
-        <p class="legend">Click a marker for more information</p></op>
+        <p class="legend">Click a marker for more information</p>
+        </op>
 
     </div>
 </div>
@@ -89,10 +115,6 @@
         $("#map-container").addClass("map-shrink");
     }
 
-    $(".close").click(function () {
-        $(this).parent().parent().hide();
-        $("#map-container").removeClass("map-shrink");
-    });
 </script>
 <script>
 
@@ -199,14 +221,14 @@
             if (stationInfo[0]["status"] === 'OPEN') {
                 content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
                 content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                if (stationInfo[0]["banking"]  === 'False')
+                if (stationInfo[0]["banking"] === 'False')
                     stationInfo[0]["banking"] = 'Not available';
-                else 
+                else
                     stationInfo[0]["banking"] = 'Available';
                 content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
             } else {
                 content += "Station closed";
-                             }
+            }
 
             // add content of get request to info window
             infowindow.setContent(content);
@@ -260,7 +282,7 @@
                 // setGraph(chart,locData[i]["id"], index);
             });
         });
-        
+
     }
 
 
