@@ -265,6 +265,7 @@ body {
 
 #marker-legend img {
   height: 20px;
+  padding-right: 5px;
 }
 
 .legend {
@@ -277,4 +278,10 @@ body {
   margin-left: 12px;
   box-shadow: 0px 3px 15px rgba(0,0,0,0.5
   );
+}
+
+.close { 
+  top: 2%;
+  right: 2%;
+  font-size: 2rem;
 }

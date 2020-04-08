@@ -12,6 +12,9 @@
     <div id="map"></div>    
     <!-- info div -->
     <div id="info-div">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         <h2 id="station-title"></h2>
         <!-- timepicker-->
         <div id="timepicker-div">
@@ -48,9 +51,9 @@
     </div>
     <!-- marker legend-->
     <div id="marker-legend">
-        <p class="legend"><img src="/static/images/red-dot.png">Less than 4 bikes</p>
-        <p class="legend"><img src="/static/images/yellow-dot.png">4-10 bikes</p>
-        <p class="legend"><img src="/static/images/green-dot.png">More than 10 bikes</p>
+        <p class="legend"><img src="/static/images/bike-red.png">Less than 4 bikes</p>
+        <p class="legend"><img src="/static/images/bike-yellow.png">4-10 bikes</p>
+        <p class="legend"><img src="/static/images/bike-green.png">More than 10 bikes</p>
         <p class="legend">Click a marker for more information</p></op>
     </div>
 </div>
@@ -293,9 +296,9 @@
         var markerArray = [];
         var marker, i, colour;
 
-        let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
-        let greenMarker = "{{ url_for('static', filename='images/green-dot.png') }}"
-        let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
+        let redMarker = "{{ url_for('static', filename='images/bike-red.png') }}"
+        let greenMarker = "{{ url_for('static', filename='images/bike-green.png') }}"
+        let yellowMarker = "{{ url_for('static', filename='images/bike-yellow.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
 
@@ -342,12 +345,18 @@
                         // send get request with id of station
                         // execute function once results have been returned from get request
                         $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
-                            let content = "<h5>" + locData[i]["name"] + "</h5>";
-                            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+                            let content = "<div id='infowindow'><h5>" + locData[i]["name"] + "</h5>";
+                            if (stationInfo[0]["status"] === 'OPEN') {
+                                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                                if (stationInfo[0]["banking"]  === 'False')
+                                    stationInfo[0]["banking"] = 'Not available';
+                                else 
+                                    stationInfo[0]["banking"] = 'Available';
+                                content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+                             } else {
+                                content += "Station closed";
+                             }
                             // content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
                             // add content of get request to info window
                             infowindow.setContent(content);
