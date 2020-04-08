@@ -27,14 +27,17 @@
 
 <div id="prediction"></div>
 
-
-<div id="map-container">
+<div  id="map-container">
+    <!-- map search box -->
 
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
     <div id="map"></div>
     <!-- info div -->
     <div id="info-div">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         <h2 id="station-title"></h2>
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
         <!-- timepicker-->
@@ -70,7 +73,14 @@
             <canvas id="myChart"></canvas>
         </div>
     </div>
+    <!-- marker legend-->
     <div id="marker-legend">
+
+        <p class="legend"><img src="/static/images/bike-red.png">Less than 4 bikes</p>
+        <p class="legend"><img src="/static/images/bike-yellow.png">4-10 bikes</p>
+        <p class="legend"><img src="/static/images/bike-green.png">More than 10 bikes</p>
+        <p class="legend">Click a marker for more information</p></op>
+
     </div>
 </div>
 <script>
@@ -476,11 +486,6 @@
         let yellowMarker = "{{ url_for('static', filename='images/bike-yellow.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
-        //marker colour legend
-        let legendContent = "<p>" + '<img src="' + redMarker + '">' + "Less than 4 bikes</p>";
-        legendContent += "<p>" + '<img src="' + yellowMarker + '">' + "4-10 bikes</p>";
-        legendContent += "<p>" + '<img src="' + greenMarker + '">' + "More than 10 bikes</p>";
-        $("#marker-legend").html(legendContent);
 
         $.getJSON("/query", { id: "all" }, function (allStationInfo) {
 
@@ -508,8 +513,10 @@
                 // add on-click function using closure and IIFE
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
                     return function () {
+
                         getStationInfo(marker, i)
                     }
+
                 })(marker, i));
 
                 markerArray.push(marker);
