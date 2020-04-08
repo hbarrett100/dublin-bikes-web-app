@@ -71,63 +71,37 @@
         </div>
 
         <h3>Average historical Data</h3>
-        <h4>Average historical Data</h4>
+        <h6>Choose a day</h6>
         <div class="daypicker-div">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-outline-info active">
-                    <span class="date-text">Mon</span>
+                <label class="day-btn btn btn-outline-info active">
+                    <span class="day-text">Mon</span>
                     <input type="radio" name="options" id="option1" autocomplete="off" checked>
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Tue</span>
+                <label class="day-btn  btn btn-outline-info">
+                    <span class="day-text">Tue</span>
                     <input type="radio" name="options" id="option2" autocomplete="off">
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Wed</span>
+                <label class="day-btn btn btn-outline-info">
+                    <span class="day-text">Wed</span>
                     <input type="radio" name="options" id="option3" autocomplete="off">
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Thurs</span>
+                <label class="day-btn btn btn-outline-info">
+                    <span class="day-text">Thurs</span>
                     <input type="radio" name="options" id="option4" autocomplete="off">
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Fri</span>
+                <label class="day-btn btn btn-outline-info">
+                    <span class="day-text">Fri</span>
                     <input type="radio" name="options" id="option5" autocomplete="off">
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Sat</span>
+                <label class="day-btn btn btn-outline-info">
+                    <span class="day-text">Sat</span>
                     <input type="radio" name="options" id="option6" autocomplete="off">
                 </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text">Sun</span>
+                <label class="day-btn btn btn-outline-info">
+                    <span class="day-text">Sun</span>
                     <input type="radio" name="options" id="option7" autocomplete="off">
                 </label>
-            </div>
-        </div>
-        
-        
-
-        <div class="daypicker-div">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-outline-info active">
-                    <span class="date-text" id="button1"></span>
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
-                </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text" id="button2"></span>
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text" id="button3"></span>
-                    <input type="radio" name="options" id="option3" autocomplete="off">
-                </label>
-                <label class=" btn btn-outline-info">
-                    <span class="date-text" id="button4"></span>
-                    <input type="radio" name="options" id="option4" autocomplete="off">
-                </label>
-                <label class="btn btn-outline-info">
-                    <span class="date-text" id="button5"></span>
-                    <input type="radio" name="options" id="option5" autocomplete="off">
             </div>
         </div>
 
@@ -324,6 +298,7 @@
             });
         });
 
+        addOnClicksToDayButtons(locData[i]["id"])
     }
 
 
@@ -643,6 +618,26 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> -->
 
 <script>
+    function addOnClicksToDayButtons(id){
+        $('.day-btn').each(function (index, obj) {
+            $(obj).off("click");
+            $(obj).click(function () {
+                console.log(id, index);
+                // setGraph(chart,locData[i]["id"], index);
+            });
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+
     // Set graph data to particular data for selected stop
     function setGraph(chart, stationid) {
         station = modelData[stationid];
@@ -713,7 +708,7 @@
     };
 
     // Create chart in myChart div
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementById('daily-chart').getContext('2d');
     var chart = new Chart(ctx, config);
 </script>
 
