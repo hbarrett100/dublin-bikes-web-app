@@ -51,9 +51,9 @@
     </div>
     <!-- marker legend-->
     <div id="marker-legend">
-        <p class="legend"><img src="/static/images/red-dot.png">Less than 4 bikes</p>
-        <p class="legend"><img src="/static/images/yellow-dot.png">4-10 bikes</p>
-        <p class="legend"><img src="/static/images/green-dot.png">More than 10 bikes</p>
+        <p class="legend"><img src="/static/images/bike-red.png">Less than 4 bikes</p>
+        <p class="legend"><img src="/static/images/bike-yellow.png">4-10 bikes</p>
+        <p class="legend"><img src="/static/images/bike-green.png">More than 10 bikes</p>
         <p class="legend">Click a marker for more information</p></op>
     </div>
 </div>
@@ -296,9 +296,9 @@
         var markerArray = [];
         var marker, i, colour;
 
-        let redMarker = "{{ url_for('static', filename='images/red-dot.png') }}"
-        let greenMarker = "{{ url_for('static', filename='images/green-dot.png') }}"
-        let yellowMarker = "{{ url_for('static', filename='images/yellow-dot.png') }}"
+        let redMarker = "{{ url_for('static', filename='images/bike-red.png') }}"
+        let greenMarker = "{{ url_for('static', filename='images/bike-green.png') }}"
+        let yellowMarker = "{{ url_for('static', filename='images/bike-yellow.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
 
