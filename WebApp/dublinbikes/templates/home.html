@@ -345,12 +345,18 @@
                         // send get request with id of station
                         // execute function once results have been returned from get request
                         $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
-                            let content = "<h5>" + locData[i]["name"] + "</h5>";
-                            content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                            content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
-                            content += "<p>Status: " + stationInfo[0]["status"] + "</p>";
-                            content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
-                            content += "<p>Number of bike stands: " + stationInfo[0]["numbikestands"] + "</p>";
+                            let content = "<div id='infowindow'><h5>" + locData[i]["name"] + "</h5>";
+                            if (stationInfo[0]["status"] === 'OPEN') {
+                                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
+                                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                                if (stationInfo[0]["banking"]  === 'False')
+                                    stationInfo[0]["banking"] = 'Not available';
+                                else 
+                                    stationInfo[0]["banking"] = 'Available';
+                                content += "<p>Banking: " + stationInfo[0]["banking"] + "</p>";
+                             } else {
+                                content += "Station closed";
+                             }
                             // content += "<object type='image/svg+xml' data='{{ url_for('static', filename='images/star.svg') }}' class='fav-star'></object>"
                             // add content of get request to info window
                             infowindow.setContent(content);
