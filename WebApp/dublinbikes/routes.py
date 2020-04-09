@@ -13,7 +13,7 @@ def home():
     if current_user.is_authenticated:
         stations = current_user.stations
     else:
-        stations = "[]"
+        stations = 0
         
     return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
@@ -22,6 +22,10 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+
+@app.route('/privacypolicy')
+def privacypolicy():
+    return render_template('privacypolicy.html', title='Privacy Policy')
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():

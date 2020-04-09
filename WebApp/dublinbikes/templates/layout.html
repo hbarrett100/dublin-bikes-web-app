@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="shortcut icon" type="image/x-icon" href=" {{ url_for('static', filename='images/favicon.png') }}"/>
+  <link rel="shortcut icon" type="image/x-icon" href=" {{ url_for('static', filename='images/favicon.png') }}" />
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -39,6 +39,7 @@
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
             <a class="nav-item navbar-text" id="nav-bar-email">{{ current_user.email }}</a>
+
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -47,13 +48,22 @@
               <div class="dropdown-menu" id="favourites-menu" aria-labelledby="navbarDropdown">
               </div>
             </div>
+
             <a class="nav-item nav-link" href="/logout">Log Out</a>
             <a class="nav-item nav-link" href="/account">Account</a>
+
             {% else %}
             <a class="nav-item nav-link" href="/login">Login</a>
             <a class="nav-item nav-link" href="/register">Register</a>
             {% endif %}
-
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="allStationsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                All Stations
+              </a>
+              <div class="dropdown-menu pre-scrollable" id="all-stations-menu" aria-labelledby="navbarDropdown">
+              </div>
+            </div>
           </div>
         </div>
       </div>
