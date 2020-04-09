@@ -293,14 +293,14 @@
         // loop through all elements in the class date-text 
         $('.date-text').each(function (index, obj) {
             // create Date object
-            date.setDate(date.getDate() + index);
+            
             if (date.getDate() < 10) {
                 newdate = 0 + "" + date.getDate();
             } else {
                 newdate = date.getDate();
             }
             obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
-
+            date.setDate(date.getDate() + 1);
         });
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
@@ -622,9 +622,6 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk5FkeAnIxVpfk2ufqO3F1ofYF84oDT6c&callback=initMap&libraries=places"></script>
 
 
-
-
-
 <script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
 <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
 
@@ -641,14 +638,6 @@
         });
 
     }
-
-
-
-
-
-
-
-
 
 
     // Set graph data to particular data for selected stop
