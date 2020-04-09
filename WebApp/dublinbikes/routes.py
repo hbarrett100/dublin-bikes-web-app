@@ -14,6 +14,7 @@ def home():
         stations = current_user.stations
     else:
         stations = "[]"
+        
     return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
 
@@ -155,3 +156,16 @@ def addstation():
     login_user(user)
     print(type(current_user.stations))
     return json.dumps(current_user.stations)
+
+
+@app.route('/averages')
+def averages():
+    # get the argument from the get request
+    id = request.args.get('id')
+    day = request.args.get('day')
+    if day =="all":
+        average_info = json.dumps(get_weekly_data(id))
+    else:
+        # invoke function to run sql query and store results
+        average_info = json.dumps(get_hourly_data_by_day(day, id))
+    return average_info
