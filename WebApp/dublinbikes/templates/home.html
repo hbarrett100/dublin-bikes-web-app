@@ -15,7 +15,11 @@
     {% if messages %}
     {% for category, message in messages %}
     <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
-        <div class="container">{{ message }} <span class="close">x</span></div>
+        <div class="container">{{ message }}
+            <button type="button" id="alert-box-home-close" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
     </div>
     {% endfor %}
     {% endif %}
@@ -35,7 +39,7 @@
     <div id="map"></div>
     <!-- info div -->
     <div id="info-div">
-        <button type="button" class="close" aria-label="Close">
+        <button type="button" id="info-div-close" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <h2 id="station-title"></h2>
@@ -129,6 +133,14 @@
         $("#map-container").addClass("map-shrink");
     }
 
+
+    $("#info-div-close").click(() => $("#info-div").hide());
+    $("#alert-box-home-close").click(() => {
+        $("#alert-box").hide();
+        $("#map-container").removeClass("map-shrink");
+    });
+
+
 </script>
 <script>
 
@@ -181,7 +193,7 @@
     }
 
     function isFavourited(id) {
-        if(userStationIds){
+        if (userStationIds) {
             return userStationIds.includes(id.toString());
         } else {
             return false;
