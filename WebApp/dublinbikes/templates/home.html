@@ -266,10 +266,13 @@
         // create jquery timepicker
         $('#timepicker').timepicker({
             timeFormat: 'HH:mm',
-            interval: 30,
+            interval: 60,
             scrollbar: true,
             defaultTime: currentTime,
-            dynamic: false
+            dynamic: false,
+            change: function(time) {
+                getPrediction(currentMarkerId);
+            }
         });
         // date buttons
         const weekdays = ['Sun','Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
@@ -308,6 +311,7 @@
             $(obj).click(function () {
                 // console.log(locData[i]["id"], index);
                 // setGraph(chart,locData[i]["id"], index);
+                getPrediction(currentMarkerId);
             });
         });
 
@@ -315,53 +319,39 @@
     }
 
     function getPrediction(stationid) {
-        var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
-        for (var i=1;i<6;i++) {
-            if (document.getElementById('option' + i).checked) {
-                var day = i - 1;
-            }
-        }
-        // console.log(hour);
-        // console.log(day);
-
         $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
+            // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
             for (var i=1;i<6;i++) {
                 if (document.getElementById('option' + i).checked) {
                 var day = i - 1;
                 }
             }
+
+            // assign availability variables
             var availbikes = prediction_info[day][hour];
             var availstands = prediction_info['numbikestands'] - availbikes;
 
+            // Set times prior to available predictions to current data
             if (typeof availbikes == 'undefined') {
                 availbikes = parseInt(document.getElementById('infowindow-availbikes').textContent);
                 availstands = parseInt(document.getElementById('infowindow-availstands').textContent);
             }
 
+            // account for negative predictions
             if (availbikes < 0) {
                 availbikes = 0;
                 availstands = prediction_info['numbikestands'];
             }
             if (availstands < 0) {
+                availstands = 0;
                 availbikes = prediction_info['numbikestands'];
-                availbikes = rediction_info['numbikestands'];
             }
+
+            // set infodiv contents to availability data
             document.getElementById('availbikes').textContent = availbikes;
             document.getElementById('availstands').textContent = availstands;
-
-            console.log(availbikes);
-            console.log(availstands);
         });
-
-        // $.getJSON("/averages", { id: stationid, day: day }, function (average_info) {
-        //     console.log(average_info)
-        //     var availbikes = average_info['availbikes']
-        //     var availstands = average_info['availstands']
-        //     chart.data.datasets[0].data = availbikes;
-        //     chart.data.datasets[1].data = availstands;
-        //     chart.update();
-        // });
     }
 
 
