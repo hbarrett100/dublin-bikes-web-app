@@ -68,6 +68,10 @@
                     <span class="date-text" id="button5"></span>
                     <input type="radio" name="options" id="option5" autocomplete="off">
             </div>
+            <div id="prediction-results">
+                Expected no. of available bikes: <span class="prediction-text" id="availbikes"></span><br>
+                Expected no. of available stands: <span class="prediction-text" id="availstands"></span>
+            </div>
         </div>
         <!-- buttons for weekday-->
         <h3>Average historical Data</h3>
@@ -231,8 +235,8 @@
         $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
             let content = "<div id='infowindow'><h5>" + locData[i]["name"] + "</h5>";
             if (stationInfo[0]["status"] === 'OPEN') {
-                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                content += "<p>Available bikes: " + "<span id='infowindow-availbikes'>" + stationInfo[0]["availbikes"] + "</span>" + "</p>";
+                content += "<p>Available stands: " + "<span id='infowindow-availstands'>" + stationInfo[0]["availstands"] + "</span>" + "</p>";
                 if (stationInfo[0]["banking"] === 'False')
                     stationInfo[0]["banking"] = 'Not available';
                 else
@@ -305,16 +309,63 @@
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
             $(obj).click(function () {
-                console.log(locData[i]["id"], index);
+                // console.log(locData[i]["id"], index);
                 // setGraph(chart,locData[i]["id"], index);
             });
         });
 
-     
-  
+        getPrediction(currentMarkerId);
     }
 
+    function getPrediction(stationid) {
+        var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
+        for (var i=1;i<6;i++) {
+            if (document.getElementById('option' + i).checked) {
+                var day = i - 1;
+            }
+        }
+        // console.log(hour);
+        // console.log(day);
 
+        $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
+            var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
+            for (var i=1;i<6;i++) {
+                if (document.getElementById('option' + i).checked) {
+                var day = i - 1;
+                }
+            }
+            var availbikes = prediction_info[day][hour];
+            var availstands = prediction_info['numbikestands'] - availbikes;
+
+            if (typeof availbikes == 'undefined') {
+                availbikes = parseInt(document.getElementById('infowindow-availbikes').textContent);
+                availstands = parseInt(document.getElementById('infowindow-availstands').textContent);
+            }
+
+            if (availbikes < 0) {
+                availbikes = 0;
+                availstands = prediction_info['numbikestands'];
+            }
+            if (availstands < 0) {
+                availbikes = prediction_info['numbikestands'];
+                availbikes = rediction_info['numbikestands'];
+            }
+            document.getElementById('availbikes').textContent = availbikes;
+            document.getElementById('availstands').textContent = availstands;
+
+            console.log(availbikes);
+            console.log(availstands);
+        });
+
+        // $.getJSON("/averages", { id: stationid, day: day }, function (average_info) {
+        //     console.log(average_info)
+        //     var availbikes = average_info['availbikes']
+        //     var availstands = average_info['availstands']
+        //     chart.data.datasets[0].data = availbikes;
+        //     chart.data.datasets[1].data = availstands;
+        //     chart.update();
+        // });
+    }
 
 
     // function to create map called upon google connection to API below
