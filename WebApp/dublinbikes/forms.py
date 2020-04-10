@@ -42,3 +42,30 @@ class UpdatePassword(FlaskForm):
                                      validators=[DataRequired(), EqualTo('new_password')])
     submit = SubmitField('Change Password')
 
+
+class SendConfirmEmail(FlaskForm):
+    submit = SubmitField('Send Confimation Email')
+
+
+class DeleteAccount(FlaskForm):
+    password = PasswordField('Please enter password',
+                             validators=[DataRequired()])
+    submit = SubmitField('Delete Account')
+    confirm = BooleanField(
+        'Tick to confirm that you wish to delete your account. Once deleted, you will not be able to recover this account.',
+         validators=[DataRequired(), ])
+
+
+class ForgotPassword(FlaskForm):
+    email = StringField('Email', validators=[
+                        DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        if not check_email(email.data):
+            raise ValidationError("Email address not found.")
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Reset Password')

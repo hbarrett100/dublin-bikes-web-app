@@ -10,11 +10,11 @@
     }
 </style>
 
-<div>
+<div class="home-alert-box">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
+    <div style="margin-bottom: 0;" class="alert alert-{{ category }}">
         <div class="container">{{ message }} <span class="close">x</span></div>
     </div>
     {% endfor %}
@@ -124,10 +124,20 @@
     </div>
 </div>
 <script>
+    function resizeMapDivForAlerts(){
+            if ($(".home-alert-box").length) {
+                let height = 56;
+                $(".home-alert-box").each((index, obj) => {
+                    height += $(obj).height()
 
-    if ($("#alert-box").length) {
-        $("#map-container").addClass("map-shrink");
-    }
+                });
+                $("#map-container").addClass("map-shrink");
+                $('.map-shrink').css({ height: "calc(100vh - " + height + "px)" });
+            }}
+
+    $(document).ready(function () {
+        resizeMapDivForAlerts()
+    });
 
 </script>
 <script>
@@ -271,7 +281,7 @@
             dynamic: false
         });
         // date buttons
-        const weekdays = ['Sun','Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         let date = new Date();
 
@@ -279,7 +289,7 @@
         //daily graph
         let today = date.getDay()
         //create current day for mySql
-        let mySqlToday = (today+1) % 7;
+        let mySqlToday = (today + 1) % 7;
 
 
         $(".day-btn").removeClass("active");
@@ -289,11 +299,11 @@
         setGraph(weeklyChart, locData[i]["id"], "all"); //weekly chart
         addOnClicksToDayButtons(locData[i]["id"])
 
-    
+
         // loop through all elements in the class date-text 
         $('.date-text').each(function (index, obj) {
             // create Date object
-            
+
             if (date.getDate() < 10) {
                 newdate = 0 + "" + date.getDate();
             } else {
@@ -310,8 +320,8 @@
             });
         });
 
-     
-  
+
+
     }
 
 
@@ -772,7 +782,7 @@
             }
         }
     };
-   
+
     // Create chart in myChart div
     var ctx = document.getElementById('weekly-chart').getContext('2d');
     var weeklyChart = new Chart(ctx, weekConfig);

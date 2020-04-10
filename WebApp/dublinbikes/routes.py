@@ -2,9 +2,10 @@
 from flask import render_template, url_for, request, flash, redirect
 from dublinbikes import app, bcrypt
 from dublinbikes.getdata import * # import get_locations, get_current_station_data, get_all_station_data, 
-from dublinbikes.users import get_password, add_user, add_favourite_station, get_favourite_stations, check_email, load_user
-from dublinbikes.forms import RegistrationForm, LoginForm, UpdateEmail, UpdatePassword
+from dublinbikes.users import *
+from dublinbikes.forms import RegistrationForm, LoginForm, UpdateEmail, UpdatePassword, SendConfirmEmail, DeleteAccount, ResetPasswordForm, ForgotPassword
 from flask_login import login_user, current_user, logout_user, login_required
+from itsdangerous import URLSafeTimedSerializer
 import json
 
 @app.route('/')
@@ -14,12 +15,15 @@ def home():
         stations = current_user.stations
     else:
         stations = "[]"
-        
+
+    email_not_confirmed(current_user)
+
     return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
 
 
 @app.route('/about')
 def about():
+    email_not_confirmed(current_user)
     return render_template('about.html', title='About')
 
 
@@ -36,11 +40,24 @@ def register():
     if form.validate_on_submit():
         hashed_pwd = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         add_user(form.email.data, hashed_pwd)
-        flash(f"Registration successful. Please login to proceed.", "success")
+
+
+        send_confirm_email(form.email.data)
+
+        flash(
+            f"Registration successful, a confirmation email has been sent to {form.email.data} Please login to proceed.", "success")
+
         return redirect(url_for("login"))
 
     # Otherwise display register form
     return render_template("register.html", title="Register", form=form)
+
+
+
+
+
+
+
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -82,14 +99,14 @@ def account():
         return redirect(url_for("home"))
     email_form = UpdateEmail()
     password_form = UpdatePassword()
-
-
+    send_confirm_form = SendConfirmEmail()
+    del_acc_form = DeleteAccount()
 
     if password_form.submit.data and password_form.validate():
         flash(f"Password updated.", "success")
         return redirect(url_for("account"))
-
-    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form)
+    email_not_confirmed(current_user)
+    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form, send_confirm_form=send_confirm_form, del_acc_form=del_acc_form)
 
 
 @app.route('/updateemail', methods=["GET", "POST"])
@@ -99,15 +116,19 @@ def updateemail():
     
     email_form = UpdateEmail()
     password_form = UpdatePassword()
+    send_confirm_form = SendConfirmEmail()
+    del_acc_form = DeleteAccount()
 
     if email_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, email_form.password.data):
         current_user.update_feature(email_form.email.data, "email")
+        current_user.update_feature(0, "confirm")
+        send_confirm_email(email_form.email.data)
         logout_user()
         user = load_user(email_form.email.data)
         login_user(user)
-        flash(f"Email updated.", "success")
+        flash(f"Email updated, a confirmation email has been sent.", "success")
         return redirect(url_for("account"))
-    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form)
+    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form, send_confirm_form=send_confirm_form, del_acc_form=del_acc_form)
 
 
 @app.route('/updatepwd', methods=["GET", "POST"])
@@ -117,6 +138,8 @@ def updatepwd():
 
     email_form = UpdateEmail()
     password_form = UpdatePassword()
+    send_confirm_form = SendConfirmEmail()
+    del_acc_form = DeleteAccount()
 
     if password_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, password_form.old_password.data):
         
@@ -124,7 +147,33 @@ def updatepwd():
         current_user.update_feature(hashed_pwd, "password")
         flash(f"Password updated.", "success")
         return redirect(url_for("account"))
-    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form)
+    return render_template("account.html", title="Account", email_form=email_form, password_form=password_form, send_confirm_form=send_confirm_form, del_acc_form=del_acc_form)
+
+
+@app.route('/confirmemail', methods=["GET", "POST"])
+def confirmemail():
+    send_confirm_email(current_user.email)
+    flash(f"Confirmation email sent.", "success")
+    return redirect(url_for("account"))
+
+
+@app.route('/deleteaccount', methods=["GET", "POST"])
+def deleteaccount():
+
+    del_acc_form = DeleteAccount()
+
+    if del_acc_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, del_acc_form.password.data):
+
+        current_user.delete_account()
+        logout_user()
+        flash(f"Account Deleted.", "success")
+        return redirect(url_for("home"))
+
+    return redirect(url_for("account"))
+
+
+
+
 
 
 @app.route('/query')
@@ -169,3 +218,72 @@ def averages():
         # invoke function to run sql query and store results
         average_info = json.dumps(get_hourly_data_by_day(day, id))
     return average_info
+
+
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    try:
+        ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+        email = ts.loads(token, salt="email-confirm-key", max_age=86400)
+    except:
+        flash(f"Something went wrong.", "danger")
+        return redirect(url_for('home'))
+    
+    user = load_user(email)
+
+    user.update_feature(1, "emailvalidated") 
+    flash(f"Your email has been confirmed, thank you.", "success")
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/reset', methods=["GET", "POST"])
+def reset():
+    form = ForgotPassword()
+    if form.validate_on_submit():
+
+        user = load_user(form.email.data)
+
+
+        if user.emailvalidated:
+            send_password_reset_email(user.email)
+            flash('Please check your email for a password reset link.', 'success')
+        else:
+            flash(
+                'Your email address must be confirmed before attempting a password reset.', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template('password_reset_email.html', form=form)
+
+
+@app.route('/reset/<token>', methods=["GET", "POST"])
+def reset_with_token(token):
+    try:
+        password_reset_serializer = URLSafeTimedSerializer(
+            app.config['SECRET_KEY'])
+        email = password_reset_serializer.loads(
+            token, salt='password-reset-salt', max_age=3600)
+    except:
+        flash('The password reset link is invalid or has expired.', 'error')
+        return redirect(url_for('login'))
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        try:
+            user = load_user(email=email)
+        except:
+            flash('Invalid email address!', 'error')
+            return redirect(url_for('login'))
+
+        hashed_pwd = bcrypt.generate_password_hash(
+                form.password.data).decode("utf-8")
+
+        user.update_feature(hashed_pwd, "password")
+
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password_with_token.html', form=form, token=token)
