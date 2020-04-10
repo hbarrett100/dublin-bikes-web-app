@@ -15,7 +15,7 @@ def home():
     else:
         stations = "[]"
         
-    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
+    return render_template('home.html', locationdata=get_locations(), stations=stations)
 
 
 @app.route('/about')

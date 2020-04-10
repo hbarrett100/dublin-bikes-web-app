@@ -208,9 +208,6 @@
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
-    // Get model predictions from flask
-    modelData = JSON.parse('{{ modeldata|tojson }}')
-
     function getStationInfo(marker, i) {
         currentMarkerId = locData[i]["id"];
 
