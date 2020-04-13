@@ -50,7 +50,7 @@
                 <h3 class="card-title">Availability Estimates</h3>
                 <div id="timepicker-div">
                     <h6>Choose a time and date:</h6>
-                    <input id="timepicker" type="text" class="timepicker btn-info" />
+                    <input id="timepicker" type="text" class="timepicker btn-info"/>
                 </div>
                 <!-- datepicker-->
                 <div class="datepicker-div">
@@ -278,11 +278,9 @@
         let hour = d.getHours();
         let minutes = d.getMinutes();
         // round time nearest half hour
-        if (minutes < 15) {
+        if (minutes < 30) {
             minutes = 0;
-        } else if (minutes >= 15 && minutes < 45) {
-            minutes = 30;
-        } else if (minutes > 45) {
+        } else if (minutes >= 30) {
             minutes = 0;
             hour = (hour + 1) % 24;
         }
@@ -294,6 +292,7 @@
             scrollbar: true,
             defaultTime: currentTime,
             dynamic: false,
+            zindex: 1000,
             change: function(time) {
                 getPrediction(currentMarkerId);
             }
