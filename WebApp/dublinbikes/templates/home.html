@@ -10,16 +10,18 @@
     }
 </style>
 
-<div>
+<div class="home-alert-box">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
+
     <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
         <div class="container">{{ message }}
             <button type="button" id="alert-box-home-close" class="close" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
+
     </div>
     {% endfor %}
     {% endif %}
@@ -159,10 +161,20 @@
     </div>
 </div>
 <script>
+    function resizeMapDivForAlerts(){
+            if ($(".home-alert-box").length) {
+                let height = 56;
+                $(".home-alert-box").each((index, obj) => {
+                    height += $(obj).height()
 
-    if ($("#alert-box").length) {
-        $("#map-container").addClass("map-shrink");
-    }
+                });
+                $("#map-container").addClass("map-shrink");
+                $('.map-shrink').css({ height: "calc(100vh - " + height + "px)" });
+            }}
+
+    $(document).ready(function () {
+        resizeMapDivForAlerts()
+    });
 
 
     $("#info-div-close").click(() => $("#info-div").hide());
@@ -375,6 +387,7 @@
 
 
         getPrediction(currentMarkerId);
+
 
     }
 

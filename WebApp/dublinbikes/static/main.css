@@ -162,7 +162,7 @@ body {
 }
 
 .map-shrink {
-  height: calc(100vh - 106px) !important; 
+  height: calc(100vh - 106px); 
 }
 
 #info-div {
