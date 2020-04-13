@@ -13,7 +13,7 @@ def home():
     if current_user.is_authenticated:
         stations = current_user.stations
     else:
-        stations = "[]"
+        stations = 0
         
     return render_template('home.html', locationdata=get_locations(), stations=stations)
 
@@ -22,6 +22,10 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+
+@app.route('/privacypolicy')
+def privacypolicy():
+    return render_template('privacypolicy.html', title='Privacy Policy')
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -170,9 +174,11 @@ def averages():
         average_info = json.dumps(get_hourly_data_by_day(day, id))
     return average_info
 
+
 @app.route('/predictions')
 def predictions():
     id = request.args.get('id')
     prediction_info = json.dumps(get_prediction(id))
     return prediction_info
+
 
