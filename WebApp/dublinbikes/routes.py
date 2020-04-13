@@ -14,11 +14,13 @@ def home():
     if current_user.is_authenticated:
         stations = current_user.stations
     else:
-        stations = "[]"
+        stations = 0
 
     email_not_confirmed(current_user)
 
     return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
+
+
 
 
 @app.route('/about')
@@ -26,6 +28,10 @@ def about():
     email_not_confirmed(current_user)
     return render_template('about.html', title='About')
 
+
+@app.route('/privacypolicy')
+def privacypolicy():
+    return render_template('privacypolicy.html', title='Privacy Policy')
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -220,6 +226,7 @@ def averages():
     return average_info
 
 
+
 @app.route('/confirm/<token>')
 def confirm_email(token):
     try:
@@ -287,3 +294,12 @@ def reset_with_token(token):
         return redirect(url_for('login'))
 
     return render_template('reset_password_with_token.html', form=form, token=token)
+
+@app.route('/predictions')
+def predictions():
+    id = request.args.get('id')
+    prediction_info = json.dumps(get_prediction(id))
+    return prediction_info
+
+
+
