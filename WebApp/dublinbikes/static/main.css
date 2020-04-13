@@ -175,7 +175,7 @@ body {
   height: calc(100vh - 156px);
   min-height: 200px;
   width: 25%;
-  min-width: 400px;
+  min-width: 440px;
   max-width: 500px;
   box-shadow: 0px 0px 5px 5px #c0c0c0;
   z-index: 5;
