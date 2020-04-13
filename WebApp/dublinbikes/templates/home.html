@@ -40,80 +40,104 @@
         </button>
         <h2 id="station-title"></h2>
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
-        <!-- timepicker-->
-        <div id="timepicker-div">
-            <h6>Choose a time and date:</h6>
-            <input id="timepicker" type="text" class="timepicker btn-info" />
-        </div>
-        <!-- datepicker-->
-        <div class="datepicker-div">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="date-btn btn btn-outline-info active">
-                    <span class="date-text" id="button1"></span>
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button2"></span>
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button3"></span>
-                    <input type="radio" name="options" id="option3" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button4"></span>
-                    <input type="radio" name="options" id="option4" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button5"></span>
-                    <input type="radio" name="options" id="option5" autocomplete="off">
-            </div>
-            <div id="prediction-results">
-                Expected no. of available bikes: <span class="prediction-text" id="availbikes"></span><br>
-                Expected no. of available stands: <span class="prediction-text" id="availstands"></span>
-            </div>
-        </div>
-        <!-- buttons for weekday-->
-        <h3>Average historical Data</h3>
-        <h6>Choose a day</h6>
-        <div class="daypicker-div">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="day-btn btn btn-outline-info" id="day-btn-1">
-                    <span class="day-text">Mon</span>
-                    <input type="radio" name="options" id="option1" autocomplete="off">
-                </label>
-                <label class="day-btn  btn btn-outline-info" id="day-btn-2">
-                    <span class="day-text">Tue</span>
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-3">
-                    <span class="day-text">Wed</span>
-                    <input type="radio" name="options" id="option3" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-4">
-                    <span class="day-text">Thurs</span>
-                    <input type="radio" name="options" id="option4" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-5">
-                    <span class="day-text">Fri</span>
-                    <input type="radio" name="options" id="option5" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-6">
-                    <span class="day-text">Sat</span>
-                    <input type="radio" name="options" id="option6" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-0">
-                    <span class="day-text">Sun</span>
-                    <input type="radio" name="options" id="option7" autocomplete="off">
-                </label>
-            </div>
-        </div>
 
-        <div class="chart-container">
-            <canvas class="chart" id="daily-chart"></canvas>
+        <br>
+        <br>
+
+        <!-- timepicker-->
+        <div id="model-div" class="card">
+            <div class="card-body">
+                <h3 class="card-title">Availability Estimates</h3>
+                <div id="timepicker-div">
+                    <h6>Choose a time and date:</h6>
+                    <input id="timepicker" type="text" class="timepicker btn-info" />
+                </div>
+                <!-- datepicker-->
+                <div class="datepicker-div">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="date-btn btn btn-outline-info active">
+                            <span class="date-text" id="button1"></span>
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button2"></span>
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button3"></span>
+                            <input type="radio" name="options" id="option3" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button4"></span>
+                            <input type="radio" name="options" id="option4" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button5"></span>
+                            <input type="radio" name="options" id="option5" autocomplete="off">
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <div id="prediction-results">
+                    <table class="table">
+                        <tr>
+                            <td>Available bikes:</td>
+                            <td><strong><span class="prediction-text" id="availbikes"></span></strong><span class="prediction-text" id="availbikes"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Available stands:</td>
+                            <td><strong><span class="prediction-text" id="availstands"></span></strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="chart-container">
-            <canvas class="chart" id="weekly-chart"></canvas>
+        <br>
+        <div id="historical-div" class="card">
+            <div class="card-body">
+                <!-- buttons for weekday-->
+                <h3 class="card-title">Average historical Data</h3>
+                <h6>Choose a day</h6>
+                <div class="daypicker-div">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="day-btn btn btn-outline-info" id="day-btn-1">
+                            <span class="day-text">Mon</span>
+                            <input type="radio" name="options" id="option1" autocomplete="off">
+                        </label>
+                        <label class="day-btn  btn btn-outline-info" id="day-btn-2">
+                            <span class="day-text">Tue</span>
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-3">
+                            <span class="day-text">Wed</span>
+                            <input type="radio" name="options" id="option3" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-4">
+                            <span class="day-text">Thurs</span>
+                            <input type="radio" name="options" id="option4" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-5">
+                            <span class="day-text">Fri</span>
+                            <input type="radio" name="options" id="option5" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-6">
+                            <span class="day-text">Sat</span>
+                            <input type="radio" name="options" id="option6" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-0">
+                            <span class="day-text">Sun</span>
+                            <input type="radio" name="options" id="option7" autocomplete="off">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas class="chart" id="daily-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas class="chart" id="weekly-chart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
     <!-- marker legend-->
