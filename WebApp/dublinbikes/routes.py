@@ -15,7 +15,7 @@ def home():
     else:
         stations = 0
         
-    return render_template('home.html', locationdata=get_locations(), modeldata=get_model_predictions(), stations=stations)
+    return render_template('home.html', locationdata=get_locations(), stations=stations)
 
 
 @app.route('/about')
@@ -173,3 +173,12 @@ def averages():
         # invoke function to run sql query and store results
         average_info = json.dumps(get_hourly_data_by_day(day, id))
     return average_info
+
+
+@app.route('/predictions')
+def predictions():
+    id = request.args.get('id')
+    prediction_info = json.dumps(get_prediction(id))
+    return prediction_info
+
+
