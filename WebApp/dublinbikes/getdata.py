@@ -237,7 +237,7 @@ def get_prediction(stationid):
     if os.name == 'nt':
         filename = os.path.join(dirname, 'static\\station_numbikestands.json')
     else:
-        filename = os.path.join(dirname, 'static/station_numbikestands.json+')
+        filename = os.path.join(dirname, 'static/station_numbikestands.json')
 
     with open(filename,'r') as handle:
         station_numbikestands = json.load(handle)

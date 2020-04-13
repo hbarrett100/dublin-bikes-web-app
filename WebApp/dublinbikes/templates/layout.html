@@ -22,7 +22,16 @@
 </head>
 
 <body>
+
+
+
+
+
   <header class="site-header">
+
+
+
+
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
       <div class="container">
         <a class="navbar-brand mr-4" href="/">Dublin Bikes</a>
@@ -39,7 +48,7 @@
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
             <a class="nav-item navbar-text" id="nav-bar-email">{{ current_user.email }}</a>
-
+            {% if request.endpoint=='home' %}
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -48,7 +57,7 @@
               <div class="dropdown-menu" id="favourites-menu" aria-labelledby="navbarDropdown">
               </div>
             </div>
-
+            {% endif %}
             <a class="nav-item nav-link" href="/logout">Log Out</a>
             <a class="nav-item nav-link" href="/account">Account</a>
 
@@ -56,6 +65,7 @@
             <a class="nav-item nav-link" href="/login">Login</a>
             <a class="nav-item nav-link" href="/register">Register</a>
             {% endif %}
+            {% if request.endpoint=='home' %}
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="allStationsDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -64,7 +74,9 @@
               <div class="dropdown-menu pre-scrollable" id="all-stations-menu" aria-labelledby="navbarDropdown">
               </div>
             </div>
+            {% endif %}
           </div>
+          
         </div>
       </div>
     </nav>
@@ -74,9 +86,11 @@
 
 
 
+
   <!-- The map page will overwrite the following section but the other pages will still have it
   This allows for the alert messages to display on top of the map -->
   {% block map_page %}
+
   <main role="main" class="container">
     <div class="row">
       <div class="col-md-8" id="alert-box">
@@ -116,6 +130,7 @@
   $("#alert-box-close").click( () => $("#alert-box").hide() );
 
 </script>
+
 
 
 

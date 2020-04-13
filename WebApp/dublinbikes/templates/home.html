@@ -43,8 +43,11 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <h2 id="station-title"></h2>
+        {% if current_user.is_authenticated %}
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
-
+        {% else %}
+        <input class="btn btn-outline-info btn-sm disabled" id="login-to-add-to-favs-btn" type="button" value="Login to add to favourites">
+        {% endif %}
         <br>
         <br>
 
@@ -381,7 +384,7 @@
             var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
             for (var i=1;i<6;i++) {
                 if (document.getElementById('option' + i).checked) {
-                var day = i - 1;
+                    var day = i - 1;
                 }
             }
 
