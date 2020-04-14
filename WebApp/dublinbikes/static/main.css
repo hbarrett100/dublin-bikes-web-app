@@ -266,6 +266,8 @@ body {
   z-index: 5;
   margin-left: 20px;
   margin-top: 55px;
+  font-family: inherit;
+  font-weight: 400;
  
 }
 
@@ -298,4 +300,10 @@ body {
   position: relative;
   width: 390px;
   height: 350px;
+}
+
+.gm-style .gm-style-iw {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 15px;
 }
