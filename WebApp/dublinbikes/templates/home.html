@@ -379,8 +379,6 @@
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
             $(obj).click(function () {
-                // console.log(locData[i]["id"], index);
-                // setGraph(chart,locData[i]["id"], index);
                 getPrediction(currentMarkerId);
             });
         });
@@ -395,12 +393,12 @@
         $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
-            for (var i=1;i<6;i++) {
-                if (document.getElementById('option' + i).checked) {
-                    var day = i - 1;
-                }
-            }
+            var day;
 
+
+            $(".date-btn").each( (index, obj) => {if($(obj).hasClass("active")) {day = index} });
+
+            
             // assign availability variables
             var availbikes = prediction_info[day][hour];
             var availstands = prediction_info['numbikestands'] - availbikes;
