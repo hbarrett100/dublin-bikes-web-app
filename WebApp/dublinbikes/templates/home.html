@@ -333,17 +333,20 @@
         }
         let currentTime = hour + ":" + minutes;
         // create jquery timepicker
-        $('#timepicker').timepicker({
-            timeFormat: 'HH:mm',
-            interval: 60,
-            scrollbar: true,
-            defaultTime: currentTime,
-            dynamic: false,
-            zindex: 1000,
-            change: function(time) {
-                getPrediction(currentMarkerId);
-            }
-        });
+            $('#timepicker').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 60,
+                minTime: currentTime,
+                maxTime: "23:00",
+                scrollbar: true,
+                defaultTime: currentTime,
+                dynamic: false,
+                zindex: 1000,
+                change: function(time) {
+                    getPrediction(currentMarkerId,currentTime);
+                }
+            });
+
         // date buttons
         const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -378,18 +381,41 @@
         });
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
+            if($(obj).hasClass("active")) {day = index}
             $(obj).click(function () {
-                getPrediction(currentMarkerId);
+                getPrediction(currentMarkerId,currentTime);
             });
         });
 
 
-        getPrediction(currentMarkerId);
+        getPrediction(currentMarkerId,currentTime);
 
 
     }
 
-    function getPrediction(stationid) {
+    function updateTimepicker(day,currentTime) {
+        // Sets limits on time picker options depending on the selected date
+        var minTime;
+        var maxTime;
+        if (day == 0) {
+            minTime = currentTime;
+            maxTime = "23:00";
+        } else if (day == 4) {
+            minTime = "00:00";
+            maxTime = currentTime;
+        } else {
+            minTime = "00:00";
+            maxTime = "23:00";
+        }
+
+
+        $('#timepicker').data('TimePicker').options.minTime = minTime;
+        $('#timepicker').data('TimePicker').options.maxTime = maxTime;
+        $('#timepicker').data('TimePicker').items = null;
+        $('#timepicker').data('TimePicker').widget.instance = null;
+    }
+
+    function getPrediction(stationid,currentTime) {
         $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
@@ -397,8 +423,11 @@
 
 
             $(".date-btn").each( (index, obj) => {if($(obj).hasClass("active")) {day = index} });
-            console.log(day);
+
             
+            // update timepicker based on selected date
+            updateTimepicker(day,currentTime);
+
             // assign availability variables
             var availbikes = prediction_info[day][hour];
             var availstands = prediction_info['numbikestands'] - availbikes;
