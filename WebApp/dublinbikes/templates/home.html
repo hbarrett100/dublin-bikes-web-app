@@ -15,9 +15,9 @@
     {% if messages %}
     {% for category, message in messages %}
 
-    <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
+    <div style="margin-bottom: 0;" class="alert alert-{{ category }}">
         <div class="container">{{ message }}
-            <button type="button" id="alert-box-home-close" class="close" aria-label="Close">
+            <button type="button" class="close alert-box-home-close" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -168,8 +168,7 @@
                     height += $(obj).height()
 
                 });
-                $("#map-container").addClass("map-shrink");
-                $('.map-shrink').css({ height: "calc(100vh - " + height + "px)" });
+                $("#map-container").css({ height: "calc(100vh - " + height + "px)" });
             }}
 
     $(document).ready(function () {
@@ -178,9 +177,10 @@
 
 
     $("#info-div-close").click(() => $("#info-div").hide());
-    $("#alert-box-home-close").click(() => {
-        $("#alert-box").hide();
-        $("#map-container").removeClass("map-shrink");
+
+    $(".alert-box-home-close").click( function() {
+        $(this).parent().parent().hide();
+        resizeMapDivForAlerts();
     });
 
 
@@ -397,7 +397,7 @@
 
 
             $(".date-btn").each( (index, obj) => {if($(obj).hasClass("active")) {day = index} });
-
+            console.log(day);
             
             // assign availability variables
             var availbikes = prediction_info[day][hour];
