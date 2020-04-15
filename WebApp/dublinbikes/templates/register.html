@@ -57,4 +57,15 @@
         Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
     </small>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            if ($('#email').val() && $('#password').val() && $('#confirm_password').val()) {
+                $("#submit").val("Submitting...");
+            }
+        });
+    });
+    
+</script>
 {% endblock static_pages %}

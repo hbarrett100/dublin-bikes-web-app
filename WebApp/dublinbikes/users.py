@@ -267,6 +267,7 @@ class User(UserMixin):
         return f"{self.email}, {self.password}, {self.stations}"
 
 
+
 def send_confirm_email(email):
     subject = "Confirm your email"
 

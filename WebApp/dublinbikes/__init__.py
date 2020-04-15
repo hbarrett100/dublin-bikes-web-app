@@ -3,6 +3,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 
+
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "7d6adad6c27339d1f158ac6341fefb25"
 
@@ -22,3 +25,4 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_DEFAULT_SENDER'] = 'conorlshort@gmail.com'
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
+

@@ -103,10 +103,10 @@ def account():
     if not current_user.is_authenticated:
         flash(f"You must log in to access account settings.", "danger")
         return redirect(url_for("home"))
-    email_form = UpdateEmail()
-    password_form = UpdatePassword()
-    send_confirm_form = SendConfirmEmail()
-    del_acc_form = DeleteAccount()
+    email_form = UpdateEmail(prefix="email")
+    password_form = UpdatePassword(prefix="pwd")
+    send_confirm_form = SendConfirmEmail(prefix = "conf-email")
+    del_acc_form = DeleteAccount(prefix="del-acc")
 
     if password_form.submit.data and password_form.validate():
         flash(f"Password updated.", "success")
@@ -120,10 +120,10 @@ def updateemail():
     if not current_user.is_authenticated:
         flash(f"You must log in to access account settings.", "danger")
     
-    email_form = UpdateEmail()
-    password_form = UpdatePassword()
-    send_confirm_form = SendConfirmEmail()
-    del_acc_form = DeleteAccount()
+    email_form = UpdateEmail(prefix="email")
+    password_form = UpdatePassword(prefix="pwd")
+    send_confirm_form = SendConfirmEmail(prefix="conf-email")
+    del_acc_form = DeleteAccount(prefix="del-acc")
 
     if email_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, email_form.password.data):
         current_user.update_feature(email_form.email.data, "email")
@@ -142,10 +142,10 @@ def updatepwd():
     if not current_user.is_authenticated:
         flash(f"You must log in to access account settings.", "danger")
 
-    email_form = UpdateEmail()
-    password_form = UpdatePassword()
-    send_confirm_form = SendConfirmEmail()
-    del_acc_form = DeleteAccount()
+    email_form = UpdateEmail(prefix="email")
+    password_form = UpdatePassword(prefix="pwd")
+    send_confirm_form = SendConfirmEmail(prefix="conf-email")
+    del_acc_form = DeleteAccount(prefix="del-acc")
 
     if password_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, password_form.old_password.data):
         

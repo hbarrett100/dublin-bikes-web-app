@@ -93,12 +93,12 @@
 
   <main role="main" class="container">
     <div class="row">
-      <div class="col-md-8" id="alert-box">
+      <div class="col-md-8">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}"> {{ message }}
-          <button type="button" id="alert-box-close" class="close" aria-label="Close">
+          <button type="button" " class="close alert-box-close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -125,12 +125,11 @@
   <!--  jQuery timepicker -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 
-
-<script>
-  $("#alert-box-close").click( () => $("#alert-box").hide() );
-
+  <script>
+    $(".alert-box-close").click( function() {
+      $(this).parent().hide();
+    });
 </script>
-
 
 
 
