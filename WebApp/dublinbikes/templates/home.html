@@ -416,6 +416,8 @@
     }
 
     function getPrediction(stationid,currentTime) {
+        $('#availbikes').text("Loading...");
+        $('#availstands').text("Loading...");
         $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));

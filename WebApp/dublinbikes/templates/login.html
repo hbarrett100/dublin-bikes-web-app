@@ -50,4 +50,16 @@
         Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
     </small>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            if ($('#email').val() && $('#password').val()) {
+                $("#submit").val("Logging in...");
+            }
+        });
+    });
+
+</script>
 {% endblock static_pages %}
