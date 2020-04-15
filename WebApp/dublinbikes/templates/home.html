@@ -48,7 +48,8 @@
         {% if current_user.is_authenticated %}
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
         {% else %}
-        <input class="btn btn-outline-info btn-sm disabled" id="login-to-add-to-favs-btn" type="button" value="Login to add to favourites">
+        <input class="btn btn-outline-info btn-sm disabled" id="login-to-add-to-favs-btn" type="button"
+            value="Login to add to favourites">
         {% endif %}
         <br>
         <br>
@@ -59,7 +60,7 @@
                 <h3 class="card-title">Availability Estimates</h3>
                 <div id="timepicker-div">
                     <h6>Choose a time and date:</h6>
-                    <input id="timepicker" type="text" class="timepicker btn-info"/>
+                    <input id="timepicker" type="text" class="timepicker btn-info" />
                 </div>
                 <!-- datepicker-->
                 <div class="datepicker-div">
@@ -91,7 +92,8 @@
                     <table class="table">
                         <tr>
                             <td>Available bikes:</td>
-                            <td><strong><span class="prediction-text" id="availbikes"></span></strong><span class="prediction-text" id="availbikes"></span></td>
+                            <td><strong><span class="prediction-text" id="availbikes"></span></strong><span
+                                    class="prediction-text" id="availbikes"></span></td>
                         </tr>
                         <tr>
                             <td>Available stands:</td>
@@ -161,15 +163,16 @@
     </div>
 </div>
 <script>
-    function resizeMapDivForAlerts(){
-            if ($(".home-alert-box").length) {
-                let height = 56;
-                $(".home-alert-box").each((index, obj) => {
-                    height += $(obj).height()
+    function resizeMapDivForAlerts() {
+        if ($(".home-alert-box").length) {
+            let height = 56;
+            $(".home-alert-box").each((index, obj) => {
+                height += $(obj).height()
 
-                });
-                $("#map-container").css({ height: "calc(100vh - " + height + "px)" });
-            }}
+            });
+            $("#map-container").css({ height: "calc(100vh - " + height + "px)" });
+        }
+    }
 
     $(document).ready(function () {
         resizeMapDivForAlerts()
@@ -178,7 +181,7 @@
 
     $("#info-div-close").click(() => $("#info-div").hide());
 
-    $(".alert-box-home-close").click( function() {
+    $(".alert-box-home-close").click(function () {
         $(this).parent().parent().hide();
         resizeMapDivForAlerts();
     });
@@ -333,19 +336,19 @@
         }
         let currentTime = hour + ":" + minutes;
         // create jquery timepicker
-            $('#timepicker').timepicker({
-                timeFormat: 'HH:mm',
-                interval: 60,
-                minTime: currentTime,
-                maxTime: "23:00",
-                scrollbar: true,
-                defaultTime: currentTime,
-                dynamic: false,
-                zindex: 1000,
-                change: function(time) {
-                    getPrediction(currentMarkerId,currentTime);
-                }
-            });
+        $('#timepicker').timepicker({
+            timeFormat: 'HH:mm',
+            interval: 60,
+            minTime: currentTime,
+            maxTime: "23:00",
+            scrollbar: true,
+            defaultTime: currentTime,
+            dynamic: false,
+            zindex: 1000,
+            change: function (time) {
+                getPrediction(currentMarkerId, currentTime);
+            }
+        });
 
         // date buttons
         const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
@@ -381,19 +384,19 @@
         });
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
-            if($(obj).hasClass("active")) {day = index}
+            if ($(obj).hasClass("active")) { day = index }
             $(obj).click(function () {
-                getPrediction(currentMarkerId,currentTime);
+                getPrediction(currentMarkerId, currentTime);
             });
         });
 
 
-        getPrediction(currentMarkerId,currentTime);
+        getPrediction(currentMarkerId, currentTime);
 
 
     }
 
-    function updateTimepicker(day,currentTime) {
+    function updateTimepicker(day, currentTime) {
         // Sets limits on time picker options depending on the selected date
         var minTime;
         var maxTime;
@@ -415,20 +418,20 @@
         $('#timepicker').data('TimePicker').widget.instance = null;
     }
 
-    function getPrediction(stationid,currentTime) {
+    function getPrediction(stationid, currentTime) {
         $('#availbikes').text("Loading...");
         $('#availstands').text("Loading...");
-        $.getJSON("/predictions", {id: stationid}, function (prediction_info) {
+        $.getJSON("/predictions", { id: stationid }, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
-            var hour = parseInt(document.getElementById('timepicker').value.substring(0,2));
+            var hour = parseInt(document.getElementById('timepicker').value.substring(0, 2));
             var day;
 
 
-            $(".date-btn").each( (index, obj) => {if($(obj).hasClass("active")) {day = index} });
+            $(".date-btn").each((index, obj) => { if ($(obj).hasClass("active")) { day = index } });
 
-            
+
             // update timepicker based on selected date
-            updateTimepicker(day,currentTime);
+            updateTimepicker(day, currentTime);
 
             // assign availability variables
             var availbikes = prediction_info[day][hour];
@@ -436,23 +439,26 @@
 
             // Set times prior to available predictions to current data
             if (typeof availbikes == 'undefined') {
-                availbikes = parseInt(document.getElementById('infowindow-availbikes').textContent);
-                availstands = parseInt(document.getElementById('infowindow-availstands').textContent);
-            }
+                $.getJSON("/query", { id: stationid }, function (stationInfo) {
+                    document.getElementById('availbikes').textContent = stationInfo[0]["availbikes"];
+                    document.getElementById('availstands').textContent = stationInfo[0]["availstands"];
+                });
+            } else {
 
-            // account for negative predictions
-            if (availbikes < 0) {
-                availbikes = 0;
-                availstands = prediction_info['numbikestands'];
-            }
-            if (availstands < 0) {
-                availstands = 0;
-                availbikes = prediction_info['numbikestands'];
-            }
+                // account for negative predictions
+                if (availbikes < 0) {
+                    availbikes = 0;
+                    availstands = prediction_info['numbikestands'];
+                }
+                if (availstands < 0) {
+                    availstands = 0;
+                    availbikes = prediction_info['numbikestands'];
+                }
 
-            // set infodiv contents to availability data
-            document.getElementById('availbikes').textContent = availbikes;
-            document.getElementById('availstands').textContent = availstands;
+                // set infodiv contents to availability data
+                document.getElementById('availbikes').textContent = availbikes;
+                document.getElementById('availstands').textContent = availstands;
+            }
         });
     }
 
