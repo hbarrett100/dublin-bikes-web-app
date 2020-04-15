@@ -334,3 +334,31 @@ def get_prediction(stationid):
             station[day][hour] = int(round(y[0]))
     station['numbikestands'] = numbikestands
     return station
+
+def get_hourly_forecast(day,hour):
+    import datetime
+
+
+    forecast = get_5day_forcast()
+    weather = dict()
+    for prediction in forecast['list']:
+        for i in range(3):
+            time = prediction['dt'] + 60*60*i
+            days_from_today = (datetime.datetime.fromtimestamp(time).date() - datetime.datetime.today().date()).days
+            # print(days_from_today)
+            if days_from_today == day:
+                thishour = datetime.datetime.fromtimestamp(time).hour
+                if thishour == hour:
+                    weather['weatherdescription'] = prediction['weather'][0]['description']
+                    weather['temp'] = prediction['main']['temp']
+                    weather['wind'] = prediction['wind']['speed']
+                    return weather
+    current_weather = get_weather()
+    weather = {
+        'weatherdescription':current_weather['weatherdescription'],
+        'temp':current_weather['temp'],
+        'wind':current_weather['wind']
+    }
+    return weather
+
+print('Here: ', get_hourly_forecast(1,20))

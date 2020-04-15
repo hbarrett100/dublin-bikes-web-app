@@ -301,5 +301,12 @@ def predictions():
     prediction_info = json.dumps(get_prediction(id))
     return prediction_info
 
+@app.route('/weather')
+def weather():
+    day = int(request.args.get('day'))
+    hour = int(request.args.get('hour'))
+    weather_info = json.dumps(get_hourly_forecast(day,hour))
+    return weather_info
+
 
 
