@@ -357,7 +357,6 @@ def get_hourly_forecast(day,hour):
     API_KEY = "16fb93e92d3bd8aefd9b647c1a8f6acf"
     URL = "http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&appid=" + API_KEY
 
-
     try:
         r = requests.get(url = URL)
     except: 
@@ -371,5 +370,4 @@ def get_hourly_forecast(day,hour):
         'temp':int(round(current_weather['main']['temp'] - 273.15)),
         'wind':current_weather['wind']['speed']*3.6
     }
-    print(weather)
     return weather
