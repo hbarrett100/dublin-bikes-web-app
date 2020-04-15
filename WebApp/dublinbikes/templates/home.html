@@ -435,9 +435,9 @@
     function getWeather(thisday,thishour) {
         // Retrieve weather from selected hour and day
         $.getJSON("/weather", {day: thisday, hour:thishour}, function (weather_info) {
-            document.getElementById('weatherdescription').textContent = weather_info.weatherdescription;
-            document.getElementById('temp').textContent = weather_info.temp;
-            document.getElementById('wind').textContent = weather_info.wind;
+            $('#weatherdescription').text(weather_info.weatherdescription);
+            $('#temp').text(weather_info.temp);
+            $('#wind').text(weather_info.wind);
         });
     }
     function getPrediction(stationid, currentTime) {

@@ -360,5 +360,3 @@ def get_hourly_forecast(day,hour):
         'wind':current_weather['wind']
     }
     return weather
-
-print('Here: ', get_hourly_forecast(1,20))
