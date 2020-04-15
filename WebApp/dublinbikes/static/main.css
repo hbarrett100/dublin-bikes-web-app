@@ -307,3 +307,7 @@ body {
   font-weight: 400;
   font-size: 15px;
 }
+
+.alert-box-close, .alert-box-home-close {
+  padding-top: 35px !important;
+}
