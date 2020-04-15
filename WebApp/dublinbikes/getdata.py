@@ -337,7 +337,7 @@ def get_prediction(stationid):
 
 def get_hourly_forecast(day,hour):
     import datetime
-
+    import requests
 
     forecast = get_5day_forcast()
     weather = dict()
@@ -353,10 +353,21 @@ def get_hourly_forecast(day,hour):
                     weather['temp'] = int(round(prediction['main']['temp'] - 273.15))
                     weather['wind'] = int(round(prediction['wind']['speed']*3.6))
                     return weather
-    current_weather = get_weather()
+
+    API_KEY = "16fb93e92d3bd8aefd9b647c1a8f6acf"
+    URL = "http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&appid=" + API_KEY
+
+    try:
+        r = requests.get(url = URL)
+    except: 
+        print("Scraping error: data not collected.")
+        exit(1)
+
+    current_weather = r.json()
+
     weather = {
-        'weatherdescription':current_weather['weatherdescription'],
-        'temp':int(round(current_weather['temp'] - 273.15)),
-        'wind':current_weather['wind']*3.6
+        'weatherdescription':current_weather['weather'][0]['description'],
+        'temp':int(round(current_weather['main']['temp'] - 273.15)),
+        'wind':current_weather['wind']['speed']*3.6
     }
     return weather
