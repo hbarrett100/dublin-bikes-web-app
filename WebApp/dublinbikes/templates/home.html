@@ -88,6 +88,7 @@
                     </div>
                 </div>
                 <br>
+                <!-- Model Predictions -->
                 <div id="prediction-results">
                     <table class="table">
                         <tr>
@@ -101,18 +102,14 @@
                         </tr>
                     </table>
                 </div>
+                <!-- Weather Info -->
                 <div class="card">
                     <div class="card-body">
-                            <div class="weather">
-                                    <div class="info">
-                                        <div class="weatherdescription"><small><small>WEATHER:</small></small> <span id='weatherdescription' style="text-transform: capitalize;"></span></div>
-                                        <div class="temp"><small><small>TEMPERATURE:</small></small> <span id="temp"></span>&deg; <small>C</small></div>
-                                        <div class="wind"><small><small>WIND:</small></small> <span id="wind"></span> km/h</div>
-                                    </div>
-                                    <!-- <div class="icon">
-                                        <span class="wi-day-sunny"></span>
-                                    </div> -->
-                            </div>
+                        <div class="weather">
+                            <div class="weatherdescription"><small><small>WEATHER:</small></small> <span id='weatherdescription' style="text-transform: capitalize;"></span></div>
+                            <div class="temp"><small><small>TEMPERATURE:</small></small> <span id="temp"></span></div>
+                            <div class="wind"><small><small>WIND:</small></small> <span id="wind"></span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -438,6 +435,10 @@
             $('#weatherdescription').text(weather_info.weatherdescription);
             $('#temp').text(weather_info.temp);
             $('#wind').text(weather_info.wind);
+
+            document.getElementById('temp').innerHTML += " &deg; <small>C</small></span>";
+            document.getElementById('wind').innerHTML += " km/h"
+            // document.getElementById('wind-units').style = "visibility: visible";
         });
     }
     function getPrediction(stationid, currentTime) {
