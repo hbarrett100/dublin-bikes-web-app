@@ -350,13 +350,13 @@ def get_hourly_forecast(day,hour):
                 thishour = datetime.datetime.fromtimestamp(time).hour
                 if thishour == hour:
                     weather['weatherdescription'] = prediction['weather'][0]['description']
-                    weather['temp'] = prediction['main']['temp']
-                    weather['wind'] = prediction['wind']['speed']
+                    weather['temp'] = int(round(prediction['main']['temp'] - 273.15))
+                    weather['wind'] = int(round(prediction['wind']['speed']*3.6))
                     return weather
     current_weather = get_weather()
     weather = {
         'weatherdescription':current_weather['weatherdescription'],
-        'temp':current_weather['temp'],
-        'wind':current_weather['wind']
+        'temp':int(round(current_weather['temp'] - 273.15)),
+        'wind':current_weather['wind']*3.6
     }
     return weather
