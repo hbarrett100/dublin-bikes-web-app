@@ -357,6 +357,6 @@ def get_hourly_forecast(day,hour):
     weather = {
         'weatherdescription':current_weather['weatherdescription'],
         'temp':int(round(current_weather['temp'] - 273.15)),
-        'wind':current_weather['wind']*3.6
+        'wind':int(round(current_weather['wind']*3.6))
     }
     return weather
