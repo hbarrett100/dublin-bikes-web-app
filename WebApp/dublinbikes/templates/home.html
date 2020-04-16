@@ -444,9 +444,11 @@
             // document.getElementById('wind-units').style = "visibility: visible";
         });
     }
+
     function getPrediction(stationid, currentTime) {
         $('#availbikes').text("Loading...");
         $('#availstands').text("Loading...");
+        $('#timepicker').prop('disabled', true);
         $.getJSON("/predictions", { id: stationid }, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0, 2));
@@ -458,7 +460,7 @@
 
             // update timepicker based on selected date
             updateTimepicker(day, currentTime);
-
+            $('#timepicker').prop('disabled', false);
             // Update weather widget
             getWeather(day, hour);
 
