@@ -1,16 +1,21 @@
 import mysql.connector
+from dublinbikes.config import *
+
+def connect_to_db():
+    mydb = mysql.connector.connect(
+        host = database_config["host"],
+        user = database_config["user"],
+        passwd=  database_config["password"],
+        database = database_config["database"]
+    )
+    return mydb
 
 def get_locations():
     sql_statement = ("select * FROM staticinfo")
 
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
         mycursor.execute(sql_statement)
@@ -35,12 +40,7 @@ def get_locations():
 def get_current_station_data(id):
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
         # called mysql stored procedure giving id as an argument
@@ -77,12 +77,7 @@ def get_all_station_data():
     import mysql.connector
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
         # called mysql stored procedure giving id as an argument
@@ -115,12 +110,7 @@ def get_all_station_data():
 def get_weekly_data(id):
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
         # called mysql stored procedure giving id as an argument
@@ -149,12 +139,7 @@ def get_weekly_data(id):
 def get_hourly_data_by_day(day, id):
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
         # called mysql stored procedure giving id as an argument
