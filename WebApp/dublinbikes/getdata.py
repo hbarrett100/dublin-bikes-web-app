@@ -290,12 +290,17 @@ def get_prediction(stationid):
             'sunset':datetime.datetime.fromtimestamp(dublin_data['city']['sunset']).hour,
             'hour':datetime.datetime.fromtimestamp(prediction['dt']).hour
         }
-        if station_data['status'] == 'CLOSED':
-            forecast['status_CLOSED'] = 1
-            forecast['status_OPEN'] = 0
-        if station_data['status'] == 'OPEN':
+        if datetime.datetime.fromtimestamp(prediction['dt']).hour < 5:
+            if datetime.datetime.fromtimestamp(prediction['dt']).hour == 0 and datetime.datetime.fromtimestamp(prediction['dt']).minute > 30:
+                forecast['status_CLOSED'] = 1
+                forecast['status_OPEN'] = 0
+            elif datetime.datetime.fromtimestamp(prediction['dt']).hour > 0:
+                forecast['status_CLOSED'] = 1
+                forecast['status_OPEN'] = 0
+        else: 
             forecast['status_CLOSED'] = 0
             forecast['status_OPEN'] = 1
+            
         if station_data['banking'] == 'False':
             forecast['banking_False'] = 1
             forecast['banking_True'] = 0
