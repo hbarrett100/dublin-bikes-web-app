@@ -166,7 +166,7 @@ def confirmemail():
 @app.route('/deleteaccount', methods=["GET", "POST"])
 def deleteaccount():
 
-    del_acc_form = DeleteAccount()
+    del_acc_form = DeleteAccount(prefix="del-acc")
 
     if del_acc_form.validate_on_submit() and bcrypt.check_password_hash(current_user.password, del_acc_form.password.data):
 
@@ -174,10 +174,9 @@ def deleteaccount():
         logout_user()
         flash(f"Account Deleted.", "success")
         return redirect(url_for("home"))
-
+    else:
+        flash(f"Password did not match.", "danger")
     return redirect(url_for("account"))
-
-
 
 
 
