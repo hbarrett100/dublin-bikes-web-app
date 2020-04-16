@@ -162,7 +162,7 @@ body {
 }
 
 .map-shrink {
-  height: calc(100vh - 106px) !important; 
+  height: calc(100vh - 106px); 
 }
 
 #info-div {
@@ -175,7 +175,7 @@ body {
   height: calc(100vh - 156px);
   min-height: 200px;
   width: 25%;
-  min-width: 400px;
+  min-width: 460px;
   max-width: 500px;
   box-shadow: 0px 0px 5px 5px #c0c0c0;
   z-index: 5;
@@ -266,6 +266,8 @@ body {
   z-index: 5;
   margin-left: 20px;
   margin-top: 55px;
+  font-family: inherit;
+  font-weight: 400;
  
 }
 
@@ -300,6 +302,12 @@ body {
   height: 350px;
 }
 
-.about-section {
-  margin-bottom: 40px;
+.gm-style .gm-style-iw {
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.alert-box-close, .alert-box-home-close {
+  padding-top: 35px !important;
 }

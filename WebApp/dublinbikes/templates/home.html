@@ -10,12 +10,18 @@
     }
 </style>
 
-<div>
+<div class="home-alert-box">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div style="margin-bottom: 0;" class="alert alert-{{ category }}" id="alert-box">
-        <div class="container">{{ message }} <span class="close">x</span></div>
+
+    <div style="margin-bottom: 0;" class="alert alert-{{ category }}">
+        <div class="container">{{ message }}
+            <button type="button" class="close alert-box-home-close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
     </div>
     {% endfor %}
     {% endif %}
@@ -35,81 +41,125 @@
     <div id="map"></div>
     <!-- info div -->
     <div id="info-div">
-        <button type="button" class="close" aria-label="Close">
+        <button type="button" id="info-div-close" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <h2 id="station-title"></h2>
+        {% if current_user.is_authenticated %}
         <input class="btn btn-outline-info btn-sm" id="add-to-favs-btn" type="button" value="Add to Favourites">
-        <!-- timepicker-->
-        <div id="timepicker-div">
-            <h6>Choose a time and date:</h6>
-            <input id="timepicker" type="text" class="timepicker btn-info" />
-        </div>
-        <!-- datepicker-->
-        <div class="datepicker-div">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="date-btn btn btn-outline-info active">
-                    <span class="date-text" id="button1"></span>
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button2"></span>
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button3"></span>
-                    <input type="radio" name="options" id="option3" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button4"></span>
-                    <input type="radio" name="options" id="option4" autocomplete="off">
-                </label>
-                <label class="date-btn btn btn-outline-info">
-                    <span class="date-text" id="button5"></span>
-                    <input type="radio" name="options" id="option5" autocomplete="off">
-            </div>
-        </div>
-        <!-- buttons for weekday-->
-        <h3>Average historical Data</h3>
-        <h6>Choose a day</h6>
-        <div class="daypicker-div">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="day-btn btn btn-outline-info" id="day-btn-1">
-                    <span class="day-text">Mon</span>
-                    <input type="radio" name="options" id="option1" autocomplete="off">
-                </label>
-                <label class="day-btn  btn btn-outline-info" id="day-btn-2">
-                    <span class="day-text">Tue</span>
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-3">
-                    <span class="day-text">Wed</span>
-                    <input type="radio" name="options" id="option3" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-4">
-                    <span class="day-text">Thurs</span>
-                    <input type="radio" name="options" id="option4" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-5">
-                    <span class="day-text">Fri</span>
-                    <input type="radio" name="options" id="option5" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-6">
-                    <span class="day-text">Sat</span>
-                    <input type="radio" name="options" id="option6" autocomplete="off">
-                </label>
-                <label class="day-btn btn btn-outline-info" id="day-btn-0">
-                    <span class="day-text">Sun</span>
-                    <input type="radio" name="options" id="option7" autocomplete="off">
-                </label>
-            </div>
-        </div>
+        {% else %}
+        <input class="btn btn-outline-info btn-sm disabled" id="login-to-add-to-favs-btn" type="button"
+            value="Login to add to favourites">
+        {% endif %}
+        <br>
+        <br>
 
-        <div class="chart-container">
-            <canvas class="chart" id="daily-chart"></canvas>
+        <!-- timepicker-->
+        <div id="model-div" class="card">
+            <div class="card-body">
+                <h3 class="card-title">Availability Estimates</h3>
+                <div id="timepicker-div">
+                    <h6>Choose a time and date:</h6>
+                    <input id="timepicker" type="text" class="timepicker btn-info" />
+                </div>
+                <!-- datepicker-->
+                <div class="datepicker-div">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="date-btn btn btn-outline-info active">
+                            <span class="date-text" id="button1"></span>
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button2"></span>
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button3"></span>
+                            <input type="radio" name="options" id="option3" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button4"></span>
+                            <input type="radio" name="options" id="option4" autocomplete="off">
+                        </label>
+                        <label class="date-btn btn btn-outline-info">
+                            <span class="date-text" id="button5"></span>
+                            <input type="radio" name="options" id="option5" autocomplete="off">
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <!-- Model Predictions -->
+                <div id="prediction-results">
+                    <table class="table">
+                        <tr>
+                            <td>Available bikes:</td>
+                            <td><strong><span class="prediction-text" id="availbikes"></span></strong><span
+                                    class="prediction-text" id="availbikes"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Available stands:</td>
+                            <td><strong><span class="prediction-text" id="availstands"></span></strong></td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- Weather Info -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="weather">
+                            <div class="weatherdescription"><small><small>WEATHER:</small></small> <span id='weatherdescription' style="text-transform: capitalize;"></span></div>
+                            <div class="temp"><small><small>TEMPERATURE:</small></small> <span id="temp"></span></div>
+                            <div class="wind"><small><small>WIND:</small></small> <span id="wind"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="chart-container">
-            <canvas class="chart" id="weekly-chart"></canvas>
+        <br>
+        <div id="historical-div" class="card">
+            <div class="card-body">
+                <!-- buttons for weekday-->
+                <h3 class="card-title">Average historical Data</h3>
+                <h6>Choose a day:</h6>
+                <div class="daypicker-div">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="day-btn btn btn-outline-info" id="day-btn-1">
+                            <span class="day-text">Mon</span>
+                            <input type="radio" name="options" id="option1" autocomplete="off">
+                        </label>
+                        <label class="day-btn  btn btn-outline-info" id="day-btn-2">
+                            <span class="day-text">Tue</span>
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-3">
+                            <span class="day-text">Wed</span>
+                            <input type="radio" name="options" id="option3" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-4">
+                            <span class="day-text">Thurs</span>
+                            <input type="radio" name="options" id="option4" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-5">
+                            <span class="day-text">Fri</span>
+                            <input type="radio" name="options" id="option5" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-6">
+                            <span class="day-text">Sat</span>
+                            <input type="radio" name="options" id="option6" autocomplete="off">
+                        </label>
+                        <label class="day-btn btn btn-outline-info" id="day-btn-0">
+                            <span class="day-text">Sun</span>
+                            <input type="radio" name="options" id="option7" autocomplete="off">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas class="chart" id="daily-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas class="chart" id="weekly-chart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
     <!-- marker legend-->
@@ -124,10 +174,29 @@
     </div>
 </div>
 <script>
+    function resizeMapDivForAlerts() {
+        if ($(".home-alert-box").length) {
+            let height = 56;
+            $(".home-alert-box").each((index, obj) => {
+                height += $(obj).height()
 
-    if ($("#alert-box").length) {
-        $("#map-container").addClass("map-shrink");
+            });
+            $("#map-container").css({ height: "calc(100vh - " + height + "px)" });
+        }
     }
+
+    $(document).ready(function () {
+        resizeMapDivForAlerts()
+    });
+
+
+    $("#info-div-close").click(() => $("#info-div").hide());
+
+    $(".alert-box-home-close").click(function () {
+        $(this).parent().parent().hide();
+        resizeMapDivForAlerts();
+    });
+
 
 </script>
 <script>
@@ -181,7 +250,7 @@
     }
 
     function isFavourited(id) {
-        if(userStationIds){
+        if (userStationIds) {
             return userStationIds.includes(id.toString());
         } else {
             return false;
@@ -224,9 +293,6 @@
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
-    // Get model predictions from flask
-    modelData = JSON.parse('{{ modeldata|tojson }}')
-
     function getStationInfo(marker, i) {
         currentMarkerId = locData[i]["id"];
 
@@ -251,8 +317,8 @@
         $.getJSON("/query", { id: locData[i]["id"] }, function (stationInfo) {
             let content = "<div id='infowindow'><h5>" + locData[i]["name"] + "</h5>";
             if (stationInfo[0]["status"] === 'OPEN') {
-                content += "<p>Available bikes: " + stationInfo[0]["availbikes"] + "</p>";
-                content += "<p>Available stands: " + stationInfo[0]["availstands"] + "</p>";
+                content += "<p>Available bikes: " + "<span id='infowindow-availbikes'>" + stationInfo[0]["availbikes"] + "</span>" + "</p>";
+                content += "<p>Available stands: " + "<span id='infowindow-availstands'>" + stationInfo[0]["availstands"] + "</span>" + "</p>";
                 if (stationInfo[0]["banking"] === 'False')
                     stationInfo[0]["banking"] = 'Not available';
                 else
@@ -273,11 +339,9 @@
         let hour = d.getHours();
         let minutes = d.getMinutes();
         // round time nearest half hour
-        if (minutes < 15) {
+        if (minutes < 30) {
             minutes = 0;
-        } else if (minutes >= 15 && minutes < 45) {
-            minutes = 30;
-        } else if (minutes > 45) {
+        } else if (minutes >= 30) {
             minutes = 0;
             hour = (hour + 1) % 24;
         }
@@ -285,11 +349,18 @@
         // create jquery timepicker
         $('#timepicker').timepicker({
             timeFormat: 'HH:mm',
-            interval: 30,
+            interval: 60,
+            minTime: currentTime,
+            maxTime: "23:00",
             scrollbar: true,
             defaultTime: currentTime,
-            dynamic: false
+            dynamic: false,
+            zindex: 1000,
+            change: function (time) {
+                getPrediction(currentMarkerId, currentTime);
+            }
         });
+
         // date buttons
         const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat'];
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -324,17 +395,98 @@
         });
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
+            if ($(obj).hasClass("active")) { day = index }
             $(obj).click(function () {
-                console.log(locData[i]["id"], index);
-                // setGraph(chart,locData[i]["id"], index);
+                getPrediction(currentMarkerId, currentTime);
             });
         });
 
 
+        getPrediction(currentMarkerId, currentTime);
+
 
     }
 
+    function updateTimepicker(day, currentTime) {
+        // Sets limits on time picker options depending on the selected date
+        var minTime;
+        var maxTime;
+        if (day == 0) {
+            minTime = currentTime;
+            maxTime = "23:00";
+        } else if (day == 4) {
+            minTime = "00:00";
+            maxTime = currentTime;
+        } else {
+            minTime = "00:00";
+            maxTime = "23:00";
+        }
 
+
+        $('#timepicker').data('TimePicker').options.minTime = minTime;
+        $('#timepicker').data('TimePicker').options.maxTime = maxTime;
+        $('#timepicker').data('TimePicker').items = null;
+        $('#timepicker').data('TimePicker').widget.instance = null;
+    }
+
+    function getWeather(thisday,thishour) {
+        // Retrieve weather from selected hour and day
+        $.getJSON("/weather", {day: thisday, hour:thishour}, function (weather_info) {
+            $('#weatherdescription').text(weather_info.weatherdescription);
+            $('#temp').text(weather_info.temp);
+            $('#wind').text(weather_info.wind);
+
+            document.getElementById('temp').innerHTML += " &deg; <small>C</small></span>";
+            document.getElementById('wind').innerHTML += " km/h"
+            // document.getElementById('wind-units').style = "visibility: visible";
+        });
+    }
+    function getPrediction(stationid, currentTime) {
+        $('#availbikes').text("Loading...");
+        $('#availstands').text("Loading...");
+        $.getJSON("/predictions", { id: stationid }, function (prediction_info) {
+            // Retrieve selected hour and day counter from timepicker and datepicker
+            var hour = parseInt(document.getElementById('timepicker').value.substring(0, 2));
+            var day;
+
+
+            $(".date-btn").each((index, obj) => { if ($(obj).hasClass("active")) { day = index } });
+
+
+            // update timepicker based on selected date
+            updateTimepicker(day,currentTime);
+
+            // Update weather widget
+            getWeather(day,hour);
+
+            // assign availability variables
+            var availbikes = prediction_info[day][hour];
+            var availstands = prediction_info['numbikestands'] - availbikes;
+
+            // Set times prior to available predictions to current data
+            if (typeof availbikes == 'undefined') {
+                $.getJSON("/query", { id: stationid }, function (stationInfo) {
+                    document.getElementById('availbikes').textContent = stationInfo[0]["availbikes"];
+                    document.getElementById('availstands').textContent = stationInfo[0]["availstands"];
+                });
+            } else {
+
+                // account for negative predictions
+                if (availbikes < 0) {
+                    availbikes = 0;
+                    availstands = prediction_info['numbikestands'];
+                }
+                if (availstands < 0) {
+                    availstands = 0;
+                    availbikes = prediction_info['numbikestands'];
+                }
+
+                // set infodiv contents to availability data
+                document.getElementById('availbikes').textContent = availbikes;
+                document.getElementById('availstands').textContent = availstands;
+            }
+        });
+    }
 
 
     // function to create map called upon google connection to API below
@@ -776,7 +928,7 @@
                     display: true,
                     scaleLabel: {
                         display: true,
-                        labelString: 'Time'
+                        labelString: 'Day'
                     }
                 }],
                 yAxes: [{

@@ -36,11 +36,12 @@
                 {{ form.remember.label(class="form-check-label") }}
             </div>
         </fieldset>
+        <small class="text-muted ml-5">By logging in you consent to the use of cookies. </small> 
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
         <small class="text-muted ml-2">
-            <a href="#">Forgot Password?</a>
+            <a href="/reset">Forgot Password?</a>
         </small>
     </form>
 </div>
@@ -49,4 +50,16 @@
         Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
     </small>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#submit").click(function () {
+            if ($('#email').val() && $('#password').val()) {
+                $("#submit").val("Logging in...");
+            }
+        });
+    });
+
+</script>
 {% endblock static_pages %}

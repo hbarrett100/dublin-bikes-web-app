@@ -112,46 +112,6 @@ def get_all_station_data():
 
     return data
 
-def get_model_predictions():
-    import mysql.connector
-    try:
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
-        mycursor = mydb.cursor()
-        
-        mycursor.callproc('get_predictions')
-        result = mycursor.stored_results()
-        
-    except mysql.connector.Error as err:
-        print("SOMETHING WENT WRONG:", err)
-        if 'cursor' in locals():
-            cursor.close()
-        if 'mydb' in locals():
-            mydb.close()
-        exit(1)
-        
-    data = {}
-    for result in mycursor.stored_results():
-        stationid = None
-        for row in result.fetchall():
-            if row[0] != stationid:
-                stationid = row[0]
-                data[stationid] = dict()
-                data[stationid]['hour'] = []
-                data[stationid]['availbikes'] = []
-                data[stationid]['availstands'] = []
-                data[stationid]['hour'] += [row[1]]
-            data[stationid]['availbikes'] += [row[2]]
-            data[stationid]['availstands'] += [row[3]]
-    mycursor.close()
-    mydb.close()
-    
-    return data
-
 def get_weekly_data(id):
     try:
         # Connect to the RDS database
@@ -217,3 +177,197 @@ def get_hourly_data_by_day(day, id):
     mycursor.close()
     mydb.close()
     return data
+
+def deserialise_models():
+    import os
+    import pickle
+
+    dirname = os.path.dirname(__file__)
+
+    IDs = [38, 16, 36, 12, 113, 45, 2, 34, 56, 44, 104, 89, 87, 9, 29, 88, 66,
+       62, 57, 103, 77, 106, 32, 79, 17, 114, 102, 33, 27, 4, 7, 64, 41,
+       84, 37, 49, 107, 22, 69, 58, 3, 100, 48, 83, 94, 11, 39, 75, 90,
+       61, 13, 96, 91, 72, 101, 65, 6, 109, 55, 53, 115, 24, 112, 42, 73,
+       30, 26, 92, 71, 93, 19, 97, 40, 15, 10, 28, 68, 31, 23, 99, 63, 98,
+       8, 5, 86, 43, 110, 108, 50, 105, 76, 52, 74, 80, 59, 78, 117, 82,
+       51, 85, 21, 81, 95, 18, 54, 111, 67, 47, 25]
+
+    models = dict()
+    for ID in IDs:
+        #distinguish between windows/unix for describing file path
+        if os.name == 'nt':
+            filename = os.path.join(dirname, 'models\\model_'+str(ID)+'.pkl')
+        else:
+            filename = os.path.join(dirname, 'models/model_'+str(ID)+'.pkl')
+        with open(filename,'rb') as handle:
+            models[ID] = pickle.load(handle)
+        # with open('C:\\Users\\Mesel\\Documents\\CS_Masters\\software_engineering\\dublin-bikes-app\\WebApp\\dublinbikes\\models\\model_'+str(ID)+'.pkl','rb') as handle:
+        #     models[ID] = pickle.load(handle)
+    return models
+
+def get_5day_forcast():
+    import requests
+
+    """Scrapes weather data from openweathermap.org"""
+    
+    API_KEY = "16fb93e92d3bd8aefd9b647c1a8f6acf"
+    URL = "http://api.openweathermap.org/data/2.5/forecast?q=Dublin,ie&appid=" + API_KEY
+    
+#     time = get_datetime()
+    try:
+        r = requests.get(url = URL)
+    except: 
+        print("Scraping error: data not collected.")
+        exit(1)
+    
+    dublin_data = r.json()
+    return dublin_data
+
+def get_prediction(stationid):
+    import numpy as np
+    import datetime
+    import mysql.connector
+    import simplejson as json
+    import os
+
+    stationid=int(stationid)
+
+    #load json file containing numbikestands data
+    dirname = os.path.dirname(__file__)
+    if os.name == 'nt':
+        filename = os.path.join(dirname, 'static\\station_numbikestands.json')
+    else:
+        filename = os.path.join(dirname, 'static/station_numbikestands.json')
+
+    with open(filename,'r') as handle:
+        station_numbikestands = json.load(handle)
+    numbikestands = station_numbikestands[str(stationid)]
+
+    weather_conditions = ['weatherid_300', 
+                          'weatherid_301',
+                          'weatherid_310', 
+                          'weatherid_311', 
+                          'weatherid_500', 
+                          'weatherid_501', 
+                          'weatherid_502', 
+                          'weatherid_520', 
+                          'weatherid_521', 
+                          'weatherid_531', 
+                          'weatherid_612', 
+                          'weatherid_701', 
+                          'weatherid_741', 
+                          'weatherid_800', 
+                          'weatherid_801', 
+                          'weatherid_802', 
+                          'weatherid_803', 
+                          'weatherid_804', 
+                         ]
+    station_data = get_current_station_data(stationid)[0]
+    print(station_data)
+    # for station in all_station_data:
+    #     if station['id'] == stationid:
+    #         station_data = station
+    #         break
+    dublin_data = get_5day_forcast()
+    forecasts = dict()
+    for prediction in dublin_data['list']:
+        forecast = {
+            'temp':prediction['main']['temp'],
+            'feels_like':prediction['main']['feels_like'],
+            'temp_min':prediction['main']['temp_min'],
+            'temp_max':prediction['main']['temp_max'],
+            'pressure':prediction['main']['pressure'],
+            'humidity':prediction['main']['humidity'],
+            'windspeed':prediction['wind']['speed'],
+            'winddirection':prediction['wind']['deg'],
+            'clouds':prediction['clouds']['all'],
+            'sunrise':datetime.datetime.fromtimestamp(dublin_data['city']['sunrise']).hour,
+            'sunset':datetime.datetime.fromtimestamp(dublin_data['city']['sunset']).hour,
+            'hour':datetime.datetime.fromtimestamp(prediction['dt']).hour
+        }
+        if station_data['status'] == 'CLOSED':
+            forecast['status_CLOSED'] = 1
+            forecast['status_OPEN'] = 0
+        if station_data['status'] == 'OPEN':
+            forecast['status_CLOSED'] = 0
+            forecast['status_OPEN'] = 1
+        if station_data['banking'] == 'False':
+            forecast['banking_False'] = 1
+            forecast['banking_True'] = 0
+        if station_data['banking'] == 'True':
+            forecast['banking_False'] = 0
+            forecast['banking_True'] = 1
+        for condition in weather_conditions:
+            if 'weatherid_' + str(prediction['weather'][0]['id']) == condition:
+                forecast[condition] = 1
+            else:
+                forecast[condition] = 0 
+        for i in range(7):
+            if datetime.datetime.fromtimestamp(prediction['dt']).weekday() == i:
+                forecast['weekday_'+str(i)] = 1
+            else:
+                forecast['weekday_'+str(i)] = 0
+        days_from_today = (datetime.datetime.fromtimestamp(prediction['dt']).date() - datetime.datetime.today().date()).days
+        forecasts[(stationid,forecast['hour'],days_from_today)] = forecast
+
+    models = deserialise_models()
+    station = {
+        0:dict(),
+        1:dict(),
+        2:dict(),
+        3:dict(),
+        4:dict(),
+        5:dict()
+    }
+    for key in forecasts:
+        for i in range(3):
+            hour = key[1] + i
+            day = key[2]
+            if hour > 23:
+                day += 1
+                hour -= 24
+            station[day][hour] = forecasts[key]
+            station[day][hour]['hour'] = hour
+            station[day][hour] = np.array([value for value in forecasts[key].values()])
+            X = station[day][hour].reshape(1, -1) 
+            y = models[stationid].predict(X)
+            station[day][hour] = int(round(y[0]))
+    station['numbikestands'] = numbikestands
+    return station
+
+def get_hourly_forecast(day,hour):
+    import datetime
+    import requests
+
+    forecast = get_5day_forcast()
+    weather = dict()
+    for prediction in forecast['list']:
+        for i in range(3):
+            time = prediction['dt'] + 60*60*i
+            days_from_today = (datetime.datetime.fromtimestamp(time).date() - datetime.datetime.today().date()).days
+            # print(days_from_today)
+            if days_from_today == day:
+                thishour = datetime.datetime.fromtimestamp(time).hour
+                if thishour == hour:
+                    weather['weatherdescription'] = prediction['weather'][0]['description']
+                    weather['temp'] = int(round(prediction['main']['temp'] - 273.15))
+                    weather['wind'] = int(round(prediction['wind']['speed']*3.6))
+                    return weather
+
+    API_KEY = "16fb93e92d3bd8aefd9b647c1a8f6acf"
+    URL = "http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&appid=" + API_KEY
+
+    try:
+        r = requests.get(url = URL)
+    except: 
+        print("Scraping error: data not collected.")
+        exit(1)
+
+    current_weather = r.json()
+
+    weather = {
+        'weatherdescription':current_weather['weather'][0]['description'],
+        'temp':int(round(current_weather['main']['temp'] - 273.15)),
+        'wind':int(round(current_weather['wind']['speed']*3.6))
+    }
+    return weather
