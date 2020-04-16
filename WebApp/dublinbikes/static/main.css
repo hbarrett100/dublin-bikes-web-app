@@ -39,42 +39,6 @@ body {
     margin-bottom: 20px;
   }
   
-  .article-title {
-    color: #444444;
-  }
-  
-  a.article-title:hover {
-    color: #428bca;
-    text-decoration: none;
-  }
-  
-  .article-content {
-    white-space: pre-line;
-  }
-  
-  .article-img {
-    height: 65px;
-    width: 65px;
-    margin-right: 16px;
-  }
-  
-  .article-metadata {
-    padding-bottom: 1px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #e3e3e3
-  }
-  
-  .article-metadata a:hover {
-    color: #333;
-    text-decoration: none;
-  }
-  
-  .article-svg {
-    width: 25px;
-    height: 25px;
-    vertical-align: middle;
-  }
-  
   .account-img {
     height: 125px;
     width: 125px;
@@ -86,7 +50,7 @@ body {
     font-size: 2.5rem;
   }
 
-
+/*google map search box*/
   .pac-card {
     margin: 10px 10px 0 0;
     border-radius: 2px 0 0 2px;
@@ -126,6 +90,13 @@ body {
     height: 30px;
   }
 
+  /*give search bar margins*/
+.controls {
+  margin-top: 12px;
+  margin-left: 12px;
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.5
+  );
+}
   #pac-input:focus {
     border-color: #4d90fe;
   }
@@ -151,7 +122,7 @@ body {
 
 }
 
-
+/*google map container*/
 #map-container {
   width: 100vw; 
   height: calc(100vh - 56px);
@@ -165,6 +136,7 @@ body {
   height: calc(100vh - 106px); 
 }
 
+/*information section on top of map*/
 #info-div {
   position: absolute;
   top: 0;
@@ -197,15 +169,12 @@ body {
 .btn-info:hover {
   color: #fff;
   background-color: #4d83ab;
-  /* border-color: #4d83ab; */
   opacity: 0.7;
 }
 
 .btn-info:not(:disabled):not(.disabled).active, .btn-info:not(:disabled):not(.disabled):active, .show>.btn-info.dropdown-toggle {
   color: #fff;
   background-color:#4d83ab;
-  /* background-color: #117a8b; */
-  
 
 }
 
@@ -233,9 +202,6 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(77,131,171,.5);
 }
 
-.fav-star {
-  fill: yellow;
-}
 
 .chart {
   margin-top: 40px;
@@ -249,7 +215,7 @@ body {
 #datepicker-div {
   margin-bottom: 20px;
 }
-
+/*marker legend*/
 #marker-legend {
   position: absolute;
   top: 0;
@@ -281,13 +247,7 @@ body {
   font-size: 13px;
 }
 
-/*give search bar margins*/
-.controls {
-  margin-top: 12px;
-  margin-left: 12px;
-  box-shadow: 0px 3px 15px rgba(0,0,0,0.5
-  );
-}
+
 
 /*x button on info window*/
 .close { 
@@ -302,8 +262,13 @@ body {
   height: 350px;
 }
 
+/*info-window*/
 .gm-style .gm-style-iw {
   font-family: inherit;
   font-weight: 400;
   font-size: 15px;
+}
+
+.alert-box-close, .alert-box-home-close {
+  padding-top: 35px !important;
 }
