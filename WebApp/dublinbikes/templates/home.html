@@ -106,7 +106,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="weather">
-                            <div class="weatherdescription"><small><small>WEATHER:</small></small> <span id='weatherdescription' style="text-transform: capitalize;"></span></div>
+                            <div class="weatherdescription"><small><small>WEATHER:</small></small> <span
+                                    id='weatherdescription' style="text-transform: capitalize;"></span></div>
                             <div class="temp"><small><small>TEMPERATURE:</small></small> <span id="temp"></span></div>
                             <div class="wind"><small><small>WIND:</small></small> <span id="wind"></span></div>
                         </div>
@@ -153,7 +154,7 @@
                     </div>
                 </div>
 
-                 <!-- two line charts-->
+                <!-- two line charts-->
                 <div class="chart-container">
                     <canvas class="chart" id="daily-chart"></canvas>
                 </div>
@@ -175,24 +176,27 @@
     </div>
 </div>
 <script>
+
+    // Resize the map based on the number of alerts shown
     function resizeMapDivForAlerts() {
         if ($(".home-alert-box").length) {
             let height = 56;
             $(".home-alert-box").each((index, obj) => {
                 height += $(obj).height()
-
             });
             $("#map-container").css({ height: "calc(100vh - " + height + "px)" });
         }
     }
 
+    // Map is resized once the pages is loaded
     $(document).ready(function () {
         resizeMapDivForAlerts()
     });
 
-
+    // Add on click to info div close button
     $("#info-div-close").click(() => $("#info-div").hide());
 
+    // Add on click to alert box close button
     $(".alert-box-home-close").click(function () {
         $(this).parent().parent().hide();
         resizeMapDivForAlerts();
@@ -202,8 +206,11 @@
 </script>
 <script>
 
+    // Get the current user's favourited stations from Flask
     var userStationIds = JSON.parse('{{ stations|tojson }}');
 
+
+    // Adds one station to one of the menus
     function addStationToMenu(name, id, menu) {
         let $station = $('<a/>', { "class": "dropdown-item", "id": "station-menu-" + id })
             .text(name)
@@ -212,37 +219,28 @@
     }
 
 
-
+    // Fill the all stations menu, sorted alphbetically
     function fillAllStationsMenu() {
-
         let allStationsArr = [];
         for (let stationId in markerDict) {
             allStationsArr.push([markerDict[stationId]["name"], stationId]);
         }
-
         allStationsArr.sort();
         allStationsArr.forEach((station) => addStationToMenu(station[0], station[1], "#all-stations-menu"));
     }
 
-
-
-
-
+    // Fill the favourites menu, sorted alphbetically
     function fillFavouritesMenu(userStationIds) {
         $("#favourites-menu").html("");
         let favouriteStationsArr = [];
 
         if (userStationIds.length > 0) {
             userStationIds.forEach(stationId => {
-                console.log(stationId);
-                console.log(markerDict[stationId]);
                 favouriteStationsArr.push([markerDict[stationId]["name"], stationId]);
             });
             favouriteStationsArr.sort();
             favouriteStationsArr.forEach((station) => addStationToMenu(station[0], station[1], "#favourites-menu"));
-
-
-            console.log(favouriteStationsArr);
+            ;
         } else {
             let $noFavs = $('<a/>', { "class": "dropdown-item disabled" })
                 .text("No favourites selected")
@@ -250,6 +248,7 @@
         }
     }
 
+    // Check if a station is favaouried by the current user
     function isFavourited(id) {
         if (userStationIds) {
             return userStationIds.includes(id.toString());
@@ -258,6 +257,9 @@
         }
     }
 
+    // Called when the add/remove favourites button is clicked
+    // Upodates the current user's stations in the database and 
+    // repopulates teh favourites dropdown
     function addOrRemoveStationToFavourites(id) {
 
         $("#add-to-favs-btn").off("click");
@@ -285,12 +287,14 @@
 
 </script>
 <script>
+    
     // create global variables
     var map;
     var infowindow;
     var markerArray;
     var markerDict;
     var currentMarkerId;
+
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
@@ -373,8 +377,8 @@
         $("#day-btn-" + today).addClass("active");
 
         // create weekly and hourly charts
-        setGraph(dayChart, locData[i]["id"], mySqlToday); 
-        setGraph(weeklyChart, locData[i]["id"], "all"); 
+        setGraph(dayChart, locData[i]["id"], mySqlToday);
+        setGraph(weeklyChart, locData[i]["id"], "all");
 
         //add onclicks to day buttons to show hourly chart
         addOnClicksToDayButtons(locData[i]["id"])
@@ -400,7 +404,6 @@
                 getPrediction(currentMarkerId, currentTime);
             });
         });
-
 
         getPrediction(currentMarkerId, currentTime);
 
@@ -429,9 +432,9 @@
         $('#timepicker').data('TimePicker').widget.instance = null;
     }
 
-    function getWeather(thisday,thishour) {
+    function getWeather(thisday, thishour) {
         // Retrieve weather from selected hour and day
-        $.getJSON("/weather", {day: thisday, hour:thishour}, function (weather_info) {
+        $.getJSON("/weather", { day: thisday, hour: thishour }, function (weather_info) {
             $('#weatherdescription').text(weather_info.weatherdescription);
             $('#temp').text(weather_info.temp);
             $('#wind').text(weather_info.wind);
@@ -441,9 +444,11 @@
             // document.getElementById('wind-units').style = "visibility: visible";
         });
     }
+
     function getPrediction(stationid, currentTime) {
         $('#availbikes').text("Loading...");
         $('#availstands').text("Loading...");
+        $('#timepicker').prop('disabled', true);
         $.getJSON("/predictions", { id: stationid }, function (prediction_info) {
             // Retrieve selected hour and day counter from timepicker and datepicker
             var hour = parseInt(document.getElementById('timepicker').value.substring(0, 2));
@@ -454,10 +459,10 @@
 
 
             // update timepicker based on selected date
-            updateTimepicker(day,currentTime);
-
+            updateTimepicker(day, currentTime);
+            $('#timepicker').prop('disabled', false);
             // Update weather widget
-            getWeather(day,hour);
+            getWeather(day, hour);
 
             // assign availability variables
             var availbikes = prediction_info[day][hour];

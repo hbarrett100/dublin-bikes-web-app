@@ -202,6 +202,15 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(77,131,171,.5);
 }
 
+.btn-info.disabled, .btn-info:disabled {
+  color: #fff;
+  background-color:#8aa2b4;
+  border-color:#4d83ab;
+}
+
+
+
+
 
 .chart {
   margin-top: 40px;

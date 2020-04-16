@@ -1,4 +1,10 @@
+
+
+# This file contains the User class and other functions related to the creation and updating a user account
+
 from dublinbikes import login_manager, mail, app
+from dublinbikes.getdata import connect_to_db
+from dublinbikes.config import *
 from flask_login import UserMixin
 from flask_mail import Message
 from flask import render_template, url_for, flash
@@ -6,48 +12,13 @@ from itsdangerous import URLSafeTimedSerializer
 import mysql.connector
 import json
 
-def get_password(email):
-    try:
-        # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+# ====== ADDING A USER ======
 
-        mycursor = mydb.cursor()
-
-        # called mysql stored procedure giving email as an argument
-        mycursor.callproc('get_password', [email, ])
-
-        results = mycursor.stored_results()
-
-    except mysql.connector.Error as err:
-
-        print("SOMETHING WENT WRONG:", err)
-
-
-    for result in results:
-        password = result.fetchall()[0][0]
-
-    mycursor.close()
-    mydb.close()
-
-    return password
-
-
-
-
+# Add a new user to the database using their email and encrypted password
 def add_user(email, password):
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
 
@@ -64,75 +35,11 @@ def add_user(email, password):
     mydb.close()
     
 
-
-def add_favourite_station(stations, user_id):
-    try:
-        # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
-
-        mycursor = mydb.cursor()
-
-        # called mysql stored procedure giving email as an argument
-        mycursor.callproc('add_station_to_user', (stations, user_id, ))
-        mydb.commit()
-
-        print(mycursor.rowcount)
-    except mysql.connector.Error as err:
-
-        print("SOMETHING WENT WRONG:", err)
-
-    mycursor.close()
-    mydb.close()
-    
-
-# def get_password(email):
-#     pass
-
-def get_favourite_stations(id):
-    try:
-        # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
-
-        mycursor = mydb.cursor()
-
-        # called mysql stored procedure giving email as an argument
-        mycursor.callproc('get_fav_stations_by_id', [id, ])
-
-        results = mycursor.stored_results()
-
-    except mysql.connector.Error as err:
-
-        print("SOMETHING WENT WRONG:", err)
-
-
-    for result in results:
-        stations = result.fetchall()[0][0]
-
-    mycursor.close()
-    mydb.close()
-
-    return stations
-
-
+# Check to see if an email already exists in the database
 def check_email(email):
     try:
         # Connect to the RDS database
-        mydb = mysql.connector.connect(
-            host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-            user="admin",
-            passwd="fmRdzKkP6mTtwEEsCByh",
-            database="dublinbikes"
-        )
+        mydb = connect_to_db()
 
         mycursor = mydb.cursor()
 
@@ -154,24 +61,16 @@ def check_email(email):
     return email_exists
 
 
-@login_manager.user_loader
-def load_user(email):
-    if(check_email(email)):
-        return User(email)
-    else:
-        return None
+# ====== USER CLASS ======
 
-
+# This User class is used for the login functionality.
+# When a user is logged in, an instance of this class is created and called current_user
+# The user's data can then easily be accessed and updated
 class User(UserMixin):
     def __init__(self, email):
         try:
             # Connect to the RDS database
-            mydb = mysql.connector.connect(
-                host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-                user="admin",
-                passwd="fmRdzKkP6mTtwEEsCByh",
-                database="dublinbikes"
-            )
+            mydb = connect_to_db()
 
             mycursor = mydb.cursor()
 
@@ -201,12 +100,7 @@ class User(UserMixin):
     def delete_account(self):
         try:
             # Connect to the RDS database
-            mydb = mysql.connector.connect(
-                host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-                user="admin",
-                passwd="fmRdzKkP6mTtwEEsCByh",
-                database="dublinbikes"
-            )
+            mydb = connect_to_db()
 
             mycursor = mydb.cursor()
             mycursor.callproc('delete_user', [self.email, ])
@@ -219,20 +113,12 @@ class User(UserMixin):
         mycursor.close()
         mydb.close()
 
-
-
     def update_feature(self, data, feature):
         try:
             # Connect to the RDS database
-            mydb = mysql.connector.connect(
-                host="dublin-bikes.cy2mnwcfkfbs.eu-west-1.rds.amazonaws.com",
-                user="admin",
-                passwd="fmRdzKkP6mTtwEEsCByh",
-                database="dublinbikes"
-            )
+            mydb = connect_to_db()
 
             mycursor = mydb.cursor()
-            print("feattuer:", feature)
             # called mysql stored procedure giving email as an argument
             if feature == "email":
                 mycursor.callproc('update_email', [self.email, data])
@@ -247,14 +133,15 @@ class User(UserMixin):
 
             elif feature == "add_station":
                 self.stations.append(data)
-                mycursor.callproc('update_stations', [self.email, json.dumps(self.stations)])
+                mycursor.callproc('update_stations', [
+                                  self.email, json.dumps(self.stations)])
 
             elif feature == "remove_station":
                 if data in self.stations:
                     self.stations.remove(data)
-                mycursor.callproc('update_stations', [self.email, json.dumps(self.stations)])
+                mycursor.callproc('update_stations', [
+                                  self.email, json.dumps(self.stations)])
 
-                
             mydb.commit()
         except mysql.connector.Error as err:
 
@@ -267,7 +154,18 @@ class User(UserMixin):
         return f"{self.email}, {self.password}, {self.stations}"
 
 
+# The login manager uses this function to create an instance of User
+@login_manager.user_loader
+def load_user(email):
+    if(check_email(email)):
+        return User(email)
+    else:
+        return None
 
+
+# ====== EMAIL FUNCTIONS ======
+
+# Render and send a confirmation email using a time sensitive token
 def send_confirm_email(email):
     subject = "Confirm your email"
 
@@ -290,7 +188,7 @@ def send_confirm_email(email):
     mail.send(msg)
 
 
-
+# Render and send a password reset email
 def send_password_reset_email(email):
 
     subject = 'Password Reset Requested'
@@ -315,7 +213,7 @@ def send_password_reset_email(email):
 
 
 
-
+# Checks whether the current user has confirmed their email. If not, displays a message.
 def email_not_confirmed(user):
     if user.is_authenticated and not user.emailvalidated:
         flash("""Your email has not been confirmed.
