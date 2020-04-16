@@ -2,6 +2,7 @@
 from flask import render_template, url_for, request, flash, redirect
 from dublinbikes import app, bcrypt
 from dublinbikes.getdata import * 
+from dublinbikes.users import * 
 from dublinbikes.forms import RegistrationForm, LoginForm, UpdateEmail, UpdatePassword, SendConfirmEmail, DeleteAccount, ResetPasswordForm, ForgotPassword
 from flask_login import login_user, current_user, logout_user, login_required
 from itsdangerous import URLSafeTimedSerializer
