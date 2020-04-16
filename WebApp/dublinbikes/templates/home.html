@@ -39,7 +39,7 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
     <div id="map"></div>
-    <!-- info div -->
+    <!-- create info div -->
     <div id="info-div">
         <button type="button" id="info-div-close" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -62,7 +62,7 @@
                     <h6>Choose a time and date:</h6>
                     <input id="timepicker" type="text" class="timepicker btn-info" />
                 </div>
-                <!-- datepicker-->
+                <!-- date buttons-->
                 <div class="datepicker-div">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="date-btn btn btn-outline-info active">
@@ -117,7 +117,7 @@
         <br>
         <div id="historical-div" class="card">
             <div class="card-body">
-                <!-- buttons for weekday-->
+                <!-- buttons for weekdays-->
                 <h3 class="card-title">Average historical Data</h3>
                 <h6>Choose a day:</h6>
                 <div class="daypicker-div">
@@ -153,6 +153,7 @@
                     </div>
                 </div>
 
+                 <!-- two line charts-->
                 <div class="chart-container">
                     <canvas class="chart" id="daily-chart"></canvas>
                 </div>
@@ -293,6 +294,7 @@
     // get location data from flask
     locData = JSON.parse('{{ locationdata|tojson }}')
 
+    //display info window and information div when marker is selected
     function getStationInfo(marker, i) {
         currentMarkerId = locData[i]["id"];
 
@@ -301,6 +303,7 @@
         //add title of station to top of info div
         $("#station-title").html(locData[i]["name"]);
 
+        // remove station from/add station to favourites
         var favCheck = isFavourited(locData[i]["id"])
         let buttonText = favCheck ? "Remove from favourites" : "Add to favourites"
         $("#add-to-favs-btn").off("click")
@@ -308,9 +311,6 @@
             .prop("disabled", false)
             .val(buttonText)
             .click(() => addOrRemoveStationToFavourites(locData[i]["id"]));
-
-
-
 
         // send get request with id of station
         // execute function once results have been returned from get request
@@ -338,7 +338,7 @@
         let d = new Date();
         let hour = d.getHours();
         let minutes = d.getMinutes();
-        // round time nearest half hour
+        // round time to nearest half hour
         if (minutes < 30) {
             minutes = 0;
         } else if (minutes >= 30) {
@@ -366,25 +366,22 @@
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         let date = new Date();
 
-
-        //daily graph
         let today = date.getDay()
-        //create current day for mySql
-        let mySqlToday = (today + 1) % 7;
-
+        let mySqlToday = (today + 1) % 7; //create current day for mySql
 
         $(".day-btn").removeClass("active");
         $("#day-btn-" + today).addClass("active");
 
-        setGraph(dayChart, locData[i]["id"], mySqlToday); //hourly data at specific day
-        setGraph(weeklyChart, locData[i]["id"], "all"); //weekly chart
+        // create weekly and hourly charts
+        setGraph(dayChart, locData[i]["id"], mySqlToday); 
+        setGraph(weeklyChart, locData[i]["id"], "all"); 
+
+        //add onclicks to day buttons to show hourly chart
         addOnClicksToDayButtons(locData[i]["id"])
 
 
-        // loop through all elements in the class date-text 
+        // loop through all elements in the class date-text in order to fill date-buttons
         $('.date-text').each(function (index, obj) {
-            // create Date object
-
             if (date.getDate() < 10) {
                 newdate = 0 + "" + date.getDate();
             } else {
@@ -393,6 +390,9 @@
             obj.innerHTML = weekdays[date.getDay()] + "<br> " + newdate + " " + months[date.getMonth()];
             date.setDate(date.getDate() + 1);
         });
+
+        //give each date button an on-click function
+        //show the predictions once the button is clicked
         $('.date-btn').each(function (index, obj) {
             $(obj).off("click");
             if ($(obj).hasClass("active")) { day = index }
@@ -507,6 +507,7 @@
             zoomControlOptions: {
                 position: google.maps.ControlPosition.LEFT_BOTTOM
             },
+            // change the colour theme of the map
             styles: [
                 {
                     "featureType": "all",
@@ -739,15 +740,14 @@
         markerDict = {};
         var marker, i, colour;
 
+        //images for map markers
         let redMarker = "{{ url_for('static', filename='images/bike-red.png') }}"
         let greenMarker = "{{ url_for('static', filename='images/bike-green.png') }}"
         let yellowMarker = "{{ url_for('static', filename='images/bike-yellow.png') }}"
         let purpleMarker = "{{ url_for('static', filename='images/purple-dot.png') }}"
 
-
+        //HTTP request to get all station information
         $.getJSON("/query", { id: "all" }, function (allStationInfo) {
-
-            // console.log(locData)
             // loop through locdata to add markers to map
             for (i = 0; i < locData.length; i++) {
                 let availbikes = allStationInfo[locData[i]["id"]]["availbikes"];
@@ -798,9 +798,8 @@
 <script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
 <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> -->
-
 <script>
+    //add on click to weekday buttons to display hourly chart
     function addOnClicksToDayButtons(id) {
         $('.day-btn').each(function (index, obj) {
             $(obj).off("click");
@@ -811,7 +810,6 @@
         });
 
     }
-
 
     // Set graph data to particular data for selected stop
     function setGraph(chart, stationid, day) {
@@ -825,7 +823,7 @@
         });
     }
 
-    // graph configuration
+    // hourly graph configuration
     var hours = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
     var dayConfig = {
         type: 'line',
@@ -884,10 +882,11 @@
         }
     };
 
-    // Create chart in myChart div
+    // add hourly chart to html
     var ctx = document.getElementById('daily-chart').getContext('2d');
     var dayChart = new Chart(ctx, dayConfig);
 
+    //weekly graph configuration
     const weekdays = ['Mon', 'Tue', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
     var weekConfig = {
         type: 'line',
@@ -946,13 +945,10 @@
         }
     };
 
-    // Create chart in myChart div
+    // add weekly chart to html
     var ctx = document.getElementById('weekly-chart').getContext('2d');
     var weeklyChart = new Chart(ctx, weekConfig);
 </script>
-
-
-
 
 <!-- end the block. The word content not required -->
 {% endblock map_page %}
