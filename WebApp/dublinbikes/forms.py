@@ -3,6 +3,9 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from dublinbikes.users import check_email
 
+
+# ==== Register ====
+
 class RegistrationForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
@@ -16,6 +19,8 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("This email is already in use.")
 
 
+# ==== Login ====
+
 class LoginForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
@@ -23,6 +28,8 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me (uses cookies)')
     submit = SubmitField('Login')
 
+
+# ==== Account ====
 
 class UpdateEmail(FlaskForm):
     email = StringField('New Email',
@@ -56,6 +63,9 @@ class DeleteAccount(FlaskForm):
          validators=[DataRequired(), ])
 
 
+
+# ==== Password Reset ====
+
 class ForgotPassword(FlaskForm):
     email = StringField('Email', validators=[
                         DataRequired(), Email()])
@@ -64,7 +74,6 @@ class ForgotPassword(FlaskForm):
     def validate_email(self, email):
         if not check_email(email.data):
             raise ValidationError("Email address not found.")
-
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])

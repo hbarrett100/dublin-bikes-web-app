@@ -1,6 +1,8 @@
 import mysql.connector
 from dublinbikes.config import *
 
+
+# Connect to the database using credential in the config file
 def connect_to_db():
     mydb = mysql.connector.connect(
         host = database_config["host"],
@@ -10,6 +12,9 @@ def connect_to_db():
     )
     return mydb
 
+
+# Get all the static bike info from the db
+# This is used to get the locations of the bike stations and place them on the map
 def get_locations():
     sql_statement = ("select * FROM staticinfo")
 
@@ -37,6 +42,8 @@ def get_locations():
     return data
 
 
+
+# Get the current availability information for a stations using its ID
 def get_current_station_data(id):
     try:
         # Connect to the RDS database
@@ -73,6 +80,8 @@ def get_current_station_data(id):
     return data
 
 
+
+# Get the current availability information for all stations
 def get_all_station_data():
     import mysql.connector
     try:
@@ -107,6 +116,8 @@ def get_all_station_data():
 
     return data
 
+
+# Get the average availabilty per day for a station
 def get_weekly_data(id):
     try:
         # Connect to the RDS database
@@ -136,6 +147,9 @@ def get_weekly_data(id):
 
     return data
 
+
+
+# Get the average availabilty per hour for a station on a particular day of the week
 def get_hourly_data_by_day(day, id):
     try:
         # Connect to the RDS database
@@ -163,6 +177,8 @@ def get_hourly_data_by_day(day, id):
     mydb.close()
     return data
 
+
+# Unpickle the saved model files
 def deserialise_models():
     import os
     import pickle
@@ -190,6 +206,8 @@ def deserialise_models():
         #     models[ID] = pickle.load(handle)
     return models
 
+
+# Get the current 5 day forecast fron openweathermap API
 def get_5day_forcast():
     import requests
 
@@ -208,6 +226,8 @@ def get_5day_forcast():
     dublin_data = r.json()
     return dublin_data
 
+
+# Make a dictionary of the predicted availabiltly of a station for the next 5 days
 def get_prediction(stationid):
     import numpy as np
     import datetime
@@ -320,6 +340,9 @@ def get_prediction(stationid):
     station['numbikestands'] = numbikestands
     return station
 
+
+
+# Get the forecast for a particular date and time from the 5 day forecast
 def get_hourly_forecast(day,hour):
     import datetime
     import requests
@@ -345,8 +368,7 @@ def get_hourly_forecast(day,hour):
     try:
         r = requests.get(url = URL)
     except: 
-        print("Scraping error: data not collected.")
-        exit(1)
+        return None
 
     current_weather = r.json()
 
