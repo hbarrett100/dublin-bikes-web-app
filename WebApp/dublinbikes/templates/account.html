@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block static_pages %}
+<div class="content-section">
+    <form method="POST" action="/updateemail">
+        {{ email_form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Update Email</legend>
+            <div class="form-group">
+                {{ email_form.email.label(class="form-control-label") }}
+                {% if email_form.email.errors %}
+                {{ email_form.email(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in email_form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ email_form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ email_form.password.label(class="form-control-label") }}
+                {% if email_form.password.errors %}
+                {{ email_form.password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in email_form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ email_form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ email_form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </form>
+    <form method="POST" action="/confirmemail">
+        <div class="form-group">
+            <legend class="border-bottom mb-4">Validate Email</legend>
+            {{ send_confirm_form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </form>
+
+    <form method="POST" action="/updatepwd">
+        {{ password_form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Change Password</legend>
+            <div class="form-group">
+                {{ password_form.old_password.label(class="form-control-label") }}
+                {% if password_form.old_password.errors %}
+                {{ password_form.old_password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in email_form.old_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ password_form.old_password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ password_form.new_password.label(class="form-control-label") }}
+                {% if password_form.new_password.errors %}
+                {{ password_form.new_password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in password_form.new_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ password_form.new_password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ password_form.confirm_password.label(class="form-control-label") }}
+                {% if password_form.confirm_password.errors %}
+                {{ password_form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in password_form.confirm_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ password_form.confirm_password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ password_form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </form>
+
+
+    <form method="POST" action="/deleteaccount">
+        {{ del_acc_form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Delete Account</legend>
+            <div class="form-group">
+                {{ del_acc_form.password.label(class="form-control-label") }}
+                {% if del_acc_form.password.errors %}
+                {{ del_acc_form.password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in del_acc_form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ del_acc_form.password(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-check">
+                {{ del_acc_form.confirm(class="form-check-input") }}
+                {{ del_acc_form.confirm.label(class="form-check-label") }}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ del_acc_form.submit(class="btn btn-outline-info") }}
+        </div>
+        <legend class="border-bottom mb-4"></legend>
+    </form>
+
+    <p class="text-muted ml-2">
+        <a href="/reset">Forgot Password?</a>
+    </p>
+    <p class="text-muted ml-2">
+        <a href="/privacypolicy">Privacy Policy</a>
+    </p>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#conf-email-submit").click(function () {
+            $("#conf-email-submit").val("Sending...")
+                .addClass("disabled");
+        });
+    });
+
+</script>
+
+{% endblock static_pages %}

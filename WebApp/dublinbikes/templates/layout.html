@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+  <!-- other html pages will inherit this layout page -->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" type="image/x-icon" href=" {{ url_for('static', filename='images/favicon.png') }}" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- static CSS -->
+  <link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='main.css') }}">
+  <!-- jQuery timepicker CSS -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <!-- if no title given use the default-->
+  {% if title %}
+  <title>Dublin Bikes - {{ title }}</title>
+  {% else %}
+  <title>Dublin Bikes</title>
+  {% endif %}
+</head>
+<body>
+   <!-- Navbar Left Side -->
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-4" href="/">Dublin Bikes</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="/">Home</a>
+            <a class="nav-item nav-link" href="/about">About</a>
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            <!-- If user is logged in and on homepage, show favourites drop-down-->
+            {% if current_user.is_authenticated %}
+            <a class="nav-item navbar-text" id="nav-bar-email">{{ current_user.email }}</a>
+            {% if request.endpoint=='home' %}
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Favourites
+              </a>
+              <div class="dropdown-menu" id="favourites-menu" aria-labelledby="navbarDropdown">
+              </div>
+            </div>
+            {% endif %}
+            <a class="nav-item nav-link" href="/logout">Log Out</a>
+            <a class="nav-item nav-link" href="/account">Account</a>
+          <!-- show all-stations drop-down on homepage only-->
+            {% else %}
+            <a class="nav-item nav-link" href="/login">Login</a>
+            <a class="nav-item nav-link" href="/register">Register</a>
+            {% endif %}
+            {% if request.endpoint=='home' %}
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="allStationsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                All Stations
+              </a>
+              <div class="dropdown-menu pre-scrollable" id="all-stations-menu" aria-labelledby="navbarDropdown">
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- The map page will overwrite the following section but the other pages will still have it
+  This allows for the alert messages to display on top of the map -->
+  {% block map_page %}
+
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}"> {{ message }}
+          <button type="button" " class="close alert-box-close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block static_pages %}{% endblock %}
+      </div>
+    </div>
+
+  </main>
+  {% endblock %}
+
+  <!-- Bootstrap CSS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+
+  <!--  jQuery timepicker -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+    <!--  hide alert when x button clicked -->
+  <script>
+    $(".alert-box-close").click( function() {
+      $(this).parent().hide();
+    });
+</script>
+</body>
+
+</html>
