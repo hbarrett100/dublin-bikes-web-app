@@ -1,0 +1,4 @@
+Feature,count,unique,top,freq,%missing,card
+status,1059463,2,OPEN,1058491,0.0,2
+banking,1028271,2,False,695464,2.9441330183309846,2
+bonus,1028271,1,False,1028271,2.9441330183309846,1

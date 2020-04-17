@@ -1,0 +1,5 @@
+Feature,count,unique,top,freq,%missing,card
+weatherid,11269,18,803,5166,0.0,18
+weathermain,11269,7,Clouds,9061,0.0,7
+weatherdescription,11269,18,broken clouds,5166,0.0,18
+timezone,11269,2,0,7596,0.0,2
