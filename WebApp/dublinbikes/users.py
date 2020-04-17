@@ -26,7 +26,6 @@ def add_user(email, password):
         mycursor.callproc('add_user', (email, password, ))
         mydb.commit()
 
-        print(mycursor.rowcount)
     except mysql.connector.Error as err:
 
         print("SOMETHING WENT WRONG:", err)
@@ -89,7 +88,6 @@ class User(UserMixin):
             self.password = u[1]
             self.stations = json.loads(u[2])
             self.emailvalidated = u[3]
-            print(self.stations)
 
         mycursor.close()
         mydb.close()

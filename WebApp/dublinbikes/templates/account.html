@@ -124,7 +124,7 @@
         </div>
         <legend class="border-bottom mb-4"></legend>
     </form>
-    
+
     <p class="text-muted ml-2">
         <a href="/reset">Forgot Password?</a>
     </p>
@@ -133,5 +133,15 @@
     </p>
 
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#conf-email-submit").click(function () {
+            $("#conf-email-submit").val("Sending...")
+                .addClass("disabled");
+        });
+    });
+
+</script>
 
 {% endblock static_pages %}

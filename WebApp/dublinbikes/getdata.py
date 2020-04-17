@@ -141,7 +141,6 @@ def get_weekly_data(id):
             data['availbikes'].append(row[0])
             data['availstands'].append(row[1])
 
-    print(data)
     mycursor.close()
     mydb.close()
 
@@ -221,7 +220,7 @@ def get_5day_forcast():
         r = requests.get(url = URL)
     except: 
         print("Scraping error: data not collected.")
-        exit(1)
+        return None
     
     dublin_data = r.json()
     return dublin_data

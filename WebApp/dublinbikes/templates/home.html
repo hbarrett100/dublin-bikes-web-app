@@ -809,7 +809,6 @@
         $('.day-btn').each(function (index, obj) {
             $(obj).off("click");
             $(obj).click(function () {
-                console.log(id, index);
                 setGraph(dayChart, id, index);
             });
         });
@@ -819,7 +818,6 @@
     // Set graph data to particular data for selected stop
     function setGraph(chart, stationid, day) {
         $.getJSON("/averages", { id: stationid, day: day }, function (average_info) {
-            console.log(average_info)
             var availbikes = average_info['availbikes']
             var availstands = average_info['availstands']
             chart.data.datasets[0].data = availbikes;

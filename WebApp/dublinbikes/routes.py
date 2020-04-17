@@ -20,7 +20,7 @@ def home():
         stations = current_user.stations
     else:
         stations = 0
-    
+    # display a message if the user's email is not confirmed
     email_not_confirmed(current_user)
 
     return render_template('home.html', locationdata=get_locations(), stations=stations)
@@ -80,13 +80,12 @@ def login():
     # Check if the login for is filled in correctly
     if form.validate_on_submit():
         user = load_user(form.email.data)
-        print(user)
+
         # Check if user and password match
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             # Log the user in and redirect to home page
             login_user(user, remember=form.remember.data)
             flash(f"Logged in with email {form.email.data}", "success")
-            print("curr", current_user.is_authenticated)
             return redirect(url_for("home"))
         else:
             flash(f"Login failed, email and password do not match.", "danger")
@@ -111,9 +110,6 @@ def account():
     send_confirm_form = SendConfirmEmail(prefix = "conf-email")
     del_acc_form = DeleteAccount(prefix="del-acc")
 
-    # if password_form.submit.data and password_form.validate():
-    #     flash(f"Password updated.", "success")
-    #     return redirect(url_for("account"))
     email_not_confirmed(current_user)
     return render_template("account.html", title="Account", email_form=email_form, password_form=password_form, send_confirm_form=send_confirm_form, del_acc_form=del_acc_form)
 
