@@ -267,11 +267,7 @@ def get_prediction(stationid):
                           'weatherid_804', 
                          ]
     station_data = get_current_station_data(stationid)[0]
-    print(station_data)
-    # for station in all_station_data:
-    #     if station['id'] == stationid:
-    #         station_data = station
-    #         break
+    
     dublin_data = get_5day_forcast()
     forecasts = dict()
     for prediction in dublin_data['list']:
@@ -365,7 +361,6 @@ def get_hourly_forecast(day,hour):
         for i in range(3):
             time = prediction['dt'] + 60*60*i
             days_from_today = (datetime.datetime.fromtimestamp(time).date() - datetime.datetime.today().date()).days
-            # print(days_from_today)
             if days_from_today == day:
                 thishour = datetime.datetime.fromtimestamp(time).hour
                 if thishour == hour:
