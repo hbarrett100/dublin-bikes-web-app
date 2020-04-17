@@ -296,6 +296,9 @@ def get_prediction(stationid):
             elif datetime.datetime.fromtimestamp(prediction['dt']).hour > 0:
                 forecast['status_CLOSED'] = 1
                 forecast['status_OPEN'] = 0
+            else:
+                forecast['status_CLOSED'] = 0
+                forecast['status_OPEN'] = 1
         else: 
             forecast['status_CLOSED'] = 0
             forecast['status_OPEN'] = 1
@@ -303,9 +306,14 @@ def get_prediction(stationid):
         if station_data['banking'] == 'False':
             forecast['banking_False'] = 1
             forecast['banking_True'] = 0
-        if station_data['banking'] == 'True':
+        elif station_data['banking'] == 'True':
             forecast['banking_False'] = 0
             forecast['banking_True'] = 1
+        else:
+            # default banking info in case database access fails
+            forecast['banking_False'] = 1
+            forecast['banking_True'] = 0
+
         for condition in weather_conditions:
             if 'weatherid_' + str(prediction['weather'][0]['id']) == condition:
                 forecast[condition] = 1
